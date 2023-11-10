@@ -8,6 +8,6 @@ from discord.ext import commands
 # bot setup 
 
 TOKEN                   = "MTE2NTc4MDc3OTQ5OTAwODA3MA.GsQL33.tAGZhS5g83gku_0VYfFLw2kRY2k2-GKovefY90"
-INTENTS                 = discord.Intents.default()
+INTENTS                 = discord.Intents.all()
 INTENTS.message_content = True
-CLIENT                  = commands.Bot(command_prefix='!', intents=INTENTS)
+CLIENT                  = commands.Bot(command_prefix='$', intents=INTENTS)

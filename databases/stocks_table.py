@@ -77,7 +77,7 @@ def querySpecificUserStock(user_id, ticker):
 
     results = CURSOR.fetchall()
     if results == []:
-        return f"No {ticker} stock owned..."
+        return None
         
     return results
 

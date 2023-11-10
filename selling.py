@@ -16,20 +16,20 @@ async def sellStock(user_id, command):
     AMOUNT = 1
     try:
         user_id = userIdToString(user_id)
-        num_shares_to_sell = int(command[AMOUNT])
+        num_shares_to_sell = command[AMOUNT]
         
         if num_shares_to_sell <= 0: 
             return f"{command} Task Terminated: Can't sell negative or zero shares"
-        
+
         ticker = command[TICKER].upper()
+        curr_price = (await getValue([ticker]))[CURRENT_VALUE]
+        if curr_price == None:
+            return f"{command} Task Terminated: Can't find ticker"
+
         transac_instances = querySpecificUserStock(user_id, ticker)
 
         if transac_instances == None:
             return f"{command} Task Terminated: No {ticker} stock owned"
-        
-        curr_price = (await getValue([ticker]))[CURRENT_VALUE]
-        if curr_price == None:
-            return f"{command} Task Terminated: Ran into unexpected error"
 
         balance = queryUserBalance(user_id)
         new_balance = balance
@@ -81,26 +81,26 @@ async def delSellStock(user_id, command):
     TP_HIGH = 3
     try:
         user_id = userIdToString(user_id)
-        num_shares_to_sell = int(command[AMOUNT])
+        num_shares_to_sell = command[AMOUNT]
         
         if num_shares_to_sell <= 0: 
             return f"{command} Task Terminated: Can't sell negative or zero shares"
         
-        ticker = command[TICKER].upper()
+        target_price_low = command[TP_LOW]
+        target_price_high = command[TP_HIGH]
+
+        if target_price_low > target_price_high:
+            return f"{command} Task Terminated: Flip flopped target prices"
+
+        ticker = command[TICKER].upper()       
+        curr_price = (await getValue([ticker]))[CURRENT_VALUE]
+        if curr_price == None:
+            return f"{command} Task Terminated: Couldn't find ticker"
+
         transac_instances = querySpecificUserStock(user_id, ticker)
 
         if transac_instances == None:
             return f"{command} Task Terminated: No {ticker} stock owned"
-        
-        target_price_low = float(command[TP_LOW])
-        target_price_high = float(command[TP_HIGH])
-
-        if target_price_low > target_price_high:
-            return f"{command} Task Terminated: Flip flopped target prices"
-        
-        curr_price = (await getValue([ticker]))[CURRENT_VALUE]
-        if curr_price == None:
-            return f"{command} Task Terminated: Ran into unexpected error"
 
         while (curr_price < target_price_low) or (curr_price > target_price_high):
 

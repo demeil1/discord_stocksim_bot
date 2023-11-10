@@ -6,66 +6,91 @@ from databases.stocks_table import queryUserStock
 from databases.users_table import queryUserBalance
 # from commands import buying, selling, options, shorting, pichart, leaderboard
 
-def parse_message(message):
-
-    message = message.strip().split()
-    return message
-
 @CLIENT.event
 async def on_ready(): 
-    # Synchronize commands
+
     sync = await CLIENT.tree.sync()
     print(f"\nSynced {len(sync)} command(s)")
-    print(f"\nSuccessful: We have logged in as {CLIENT.user}\n")
+    print(f"\nSuccessful: We have logged in as {CLIENT.user}")
 
 @CLIENT.tree.command(description="buy [ticker: string] [# of shares: integer]")
-@app_commands.describe(ticker="ticker", num_shares="# of shares")
-async def buy(interaction: discord.Interaction, ticker: str, num_shares: int):
+@app_commands.describe(ticker="ticker",
+                       num_shares="# of shares")
+async def buy(interaction: discord.Interaction, 
+              ticker: str, 
+              num_shares: int):
 
-    parsed_message = [ticker, num_shares]
+    parsed_message = [ticker.upper(), num_shares]
     result = await buyStock(interaction.user.id, parsed_message)
     await interaction.response.send_message(result)
 
 #fix commands below and set them up in the correct guild
 
-@CLIENT.command(description = "target price buy [ticker] [# of shares: integer] [low: decimal] [high: decimal]")
-@app_commands.describe(ticker = "ticker:", num_shares = "# of shares:", tp_low = "low target price:", tp_high = "high target price:")
-async def delbuy(ctx, *, message: str):
+@CLIENT.tree.command(description = "target price buy [ticker] [# of shares: integer] [low: decimal] [high: decimal]")
+@app_commands.describe(ticker = "ticker:",
+                       num_shares = "# of shares:", 
+                       tp_low = "low target price:", 
+                       tp_high = "high target price:")
+async def delbuy(interaction: discord.Interaction,
+                 ticker: str,
+                 num_shares: int,
+                 tp_low: float,
+                 tp_high: float):
 
-    parsed_message = parse_message(message)
-    result = await delBuyStock(ctx.author.id, parsed_message)
-    await ctx.reply(result)
+    parsed_message = [ticker.upper(), num_shares, tp_low, tp_high]
+    result = await delBuyStock(interaction.user.id, parsed_message)
+    await interaction.response.send_message(result)
 
-@CLIENT.command(description = "sell [ticker] [# of shares: integer]")
-@app_commands.describe(ticker = "ticker:", num_shares = "# of shares:")
-async def sell(ctx, *, message: str):
+@CLIENT.tree.command(description = "sell [ticker] [# of shares: integer]")
+@app_commands.describe(ticker = "ticker:", 
+                       num_shares = "# of shares:")
+async def sell(interaction: discord.Interaction,
+               ticker: str,
+               num_shares: int):
 
-    parsed_message = parse_message(message)
-    result = await sellStock(ctx.author.id, parsed_message)
-    await ctx.reply(result)
+    parsed_message = [ticker.upper(), num_shares]
+    result = await sellStock(interaction.user.id, parsed_message)
+    await interaction.response.send_message(result)
 
-@CLIENT.command(description = "target price sell [ticker] [# of shares: integer] [low: decimal] [high: decimal]")
-@app_commands.describe(ticker = "ticker:", num_shares = "# of shares:", tp_low = "low target price:", tp_high = "high target price:")
-async def delsell(ctx, *, message: str):
+@CLIENT.tree.command(description = "target price sell [ticker] [# of shares: integer] [low: decimal] [high: decimal]")
+@app_commands.describe(ticker = "ticker:", 
+                       num_shares = "# of shares:", 
+                       tp_low = "low target price:", 
+                       tp_high = "high target price:")
+async def delsell(interaction: discord.Interaction,
+                  ticker: str,
+                  num_shares: int,
+                  tp_low: float,
+                  tp_high: float):
 
-    parsed_message = parse_message(message)
-    result = await delSellStock(ctx.author.id, parsed_message)
-    await ctx.reply(result)
+    parsed_message = [ticker.upper(), num_shares, tp_low, tp_high]
+    result = await delSellStock(interaction.user.id, parsed_message)
+    await interaction.response.send_message(result)
 
-@CLIENT.command(description = "return all stocks owned")
-async def query(ctx):
+@CLIENT.tree.command(description = "return all stocks owned")
+# @app_commands(tickers = "ticker(s) to search seperated by space")       need to allow querying for multiple but not all stocks
+async def query(interaction: discord.Interaction):
 
-    user_id = userIdToString(ctx.author.id)
-    result = queryUserStock(user_id)
-    if result == None:
+    user_id = userIdToString(interaction.user.id)
+    results = queryUserStock(user_id)
+    if results == None:
         result = "It's empty in here... Nothing in your database"
-    await ctx.reply(result)
+    
+    transacs = ""
+    TICKER = 0
+    SHARES = 1
+    PRICE = 2
+    TYPE = 5
+    DATE = len(transacs) - 2
+    for t in results:
+        transacs = transacs + t[TICKER] + " " + str(t[SHARES]) + " " + f"{t[PRICE]:.2f}" + " " + t[TYPE] + " " + t[DATE] + "\n"
+    await interaction.response.send_message(transacs)
 
-@CLIENT.command(description = "returns your current balance")
-async def balance(ctx):
+@CLIENT.tree.command(description = "returns your current balance")
+async def balance(interaction: discord.Interaction):
 
-    user_id = userIdToString(ctx.author.id)
+    user_id = userIdToString(interaction.user.id)
     balance = queryUserBalance(user_id)
-    await ctx.reply(f"{ctx.author}'s balance = {balance:.2f}")
+    await interaction.response.send_message(f"{interaction.user}'s balance = $ {balance:.2f}")
 
 CLIENT.run(TOKEN)

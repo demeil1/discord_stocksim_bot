@@ -17,7 +17,7 @@ async def buyStock(user_id, command):
     AMOUNT = 1
     try:
         user_id = userIdToString(user_id)
-        num_shares = int(command[AMOUNT])
+        num_shares = command[AMOUNT]
 
         if num_shares <= 0:
             return f"{command} Task Terminated: Can't purchase negative or zero shares"
@@ -67,13 +67,13 @@ async def delBuyStock(user_id, command):
     TP_HIGH = 3
     try:
         user_id = userIdToString(user_id)
-        num_shares = int(command[AMOUNT])
+        num_shares = command[AMOUNT]
 
         if num_shares <= 0:
             return f"{command} Task Terminated: Can't purchase negative or zero shares"
         
-        target_price_low = float(command[TP_LOW])
-        target_price_high = float(command[TP_HIGH])
+        target_price_low = command[TP_LOW]
+        target_price_high = command[TP_HIGH]
 
         if target_price_low > target_price_high:
             return f"{command} Task Terminated: Flip flopped target prices"
