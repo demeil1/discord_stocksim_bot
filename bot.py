@@ -2,7 +2,7 @@ from bot_config import *
 from buying import buyStock, delBuyStock
 from selling import sellStock, delSellStock
 from databases.ids import userIdToString
-from databases.stocks_table import queryUserStock
+from databases.stocks_table import queryUserStock, querySpecificUserStock
 from databases.users_table import queryUserBalance
 # from commands import buying, selling, options, shorting, pichart, leaderboard
 
@@ -67,18 +67,34 @@ async def delsell(interaction: discord.Interaction,
     result = await delSellStock(interaction.user.id, parsed_message)
     await interaction.response.send_message(result)
 
-@CLIENT.tree.command(description = "return all stocks owned")
-# @app_commands(tickers = "ticker(s) to search seperated by space")       need to allow querying for multiple but not all stocks
-async def query(interaction: discord.Interaction):
+@CLIENT.tree.command(description = "returns transactions of all purchases or purchases of specified tickers")
+@app_commands.describe(tickers = "enter '*' for all transactions or ticker(s) seperated by spaces for specific ones")      
+async def query(interaction: discord.Interaction,
+                tickers: str):
 
-    user_id = userIdToString(interaction.user.id)
-    results = queryUserStock(user_id)
-    if results == None:
-        result = "It's empty in here... Nothing in your database"
-    
     transacs = ""
-    for t in results:
-        transacs += f"{t[2:]}\n"
+    user_id = userIdToString(interaction.user.id)
+    if tickers == "*":
+        result = queryUserStock(user_id)
+        if result == None:
+            result = "It's empty in here... Nothing in your database"
+            await interaction.response.send_message(result)
+            return
+        
+        for t in result:
+            transacs += f"{t[2:]}\n"
+    else:
+        tickers = tickers.strip().split()
+        for ticker in tickers:
+            result = querySpecificUserStock(user_id, ticker.upper())
+
+            if result == None:
+                result = f"\n----- No {ticker.upper()} shares owned -----\n\n"
+                transacs += result
+                   
+            for t in result:
+                transacs += f"{t[2:]}\n"
+
     await interaction.response.send_message(transacs)
 
 @CLIENT.tree.command(description = "returns your current balance")
