@@ -77,13 +77,8 @@ async def query(interaction: discord.Interaction):
         result = "It's empty in here... Nothing in your database"
     
     transacs = ""
-    TICKER = 0
-    SHARES = 1
-    PRICE = 2
-    TYPE = 5
-    DATE = len(transacs) - 2
     for t in results:
-        transacs = transacs + t[TICKER] + " " + str(t[SHARES]) + " " + f"{t[PRICE]:.2f}" + " " + t[TYPE] + " " + t[DATE] + "\n"
+        transacs += f"{t[2:]}\n"
     await interaction.response.send_message(transacs)
 
 @CLIENT.tree.command(description = "returns your current balance")
@@ -92,5 +87,3 @@ async def balance(interaction: discord.Interaction):
     user_id = userIdToString(interaction.user.id)
     balance = queryUserBalance(user_id)
     await interaction.response.send_message(f"{interaction.user}'s balance = $ {balance:.2f}")
-
-CLIENT.run(TOKEN)

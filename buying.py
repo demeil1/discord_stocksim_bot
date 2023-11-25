@@ -37,18 +37,17 @@ async def buyStock(user_id, command):
         
         transac_time = getTransacTime()
         transac_date = getTransacDate()
-        transac_id = getTransacId()
+        transac_id   = getTransacId()
         transac_type = "buy"
 
         appendToStockTable(user_id,
-                            transac_id,
-                            transac_type,
-                            transac_date,
-                            transac_time,
-                            ticker,
-                            num_shares,
-                            share_price,
-                            share_price)
+                          transac_id,
+                          ticker,
+                          num_shares,
+                          share_price,
+                          transac_type,
+                          transac_date,
+                          transac_time)
         
         new_balance = balance - total_transac_cost
         updateUserBalance(user_id, new_balance)
@@ -111,14 +110,13 @@ async def delBuyStock(user_id, command):
         transac_type = "delbuy"
 
         appendToStockTable(user_id,
-                            transac_id,
-                            transac_type,
-                            transac_date,
-                            transac_time,
-                            ticker,
-                            num_shares,
-                            cur_value,
-                            cur_value)
+                           transac_id,
+                           ticker,
+                           num_shares,
+                           cur_value,
+                           transac_type,
+                           transac_date,
+                           transac_time)
 
         new_balance = balance - transac_cost
         updateUserBalance(user_id, new_balance)

@@ -35,15 +35,15 @@ async def sellStock(user_id, command):
         new_balance = balance
         total_profit = 0
 
-        TRANSAC_NUM_SHARES = 1
-        TRANSAC_INITIAL_PRICE = 2
-        TRANSAC_ID = 4
-
+        TRANSAC_ID = 1
+        TRANSAC_NUM_SHARES = 3
+        TRANSAC_INITIAL_PRICE = 4
+        
         for transac in transac_instances:
+            transac_id = transac[TRANSAC_ID]
             transac_num_shares = transac[TRANSAC_NUM_SHARES]
             transac_initial_price = transac[TRANSAC_INITIAL_PRICE]
-            transac_id = transac[TRANSAC_ID]
-
+            
             transac_profit = (curr_price * transac_num_shares) - (transac_initial_price * transac_num_shares)
             total_profit += transac_profit
 
@@ -115,15 +115,15 @@ async def delSellStock(user_id, command):
         new_balance = balance
         total_profit = 0
 
-        TRANSAC_NUM_SHARES = 1
-        TRANSAC_INITIAL_PRICE = 2
-        TRANSAC_ID = 4
+        TRANSAC_ID = 1
+        TRANSAC_NUM_SHARES = 3
+        TRANSAC_INITIAL_PRICE = 4
 
         for transac in transac_instances:
+            transac_id = transac[TRANSAC_ID]
             transac_num_shares = transac[TRANSAC_NUM_SHARES]
             transac_initial_price = transac[TRANSAC_INITIAL_PRICE]
-            transac_id = transac[TRANSAC_ID]
-
+            
             transac_profit = (curr_price * transac_num_shares) - (transac_initial_price * transac_num_shares)
             total_profit += transac_profit
 

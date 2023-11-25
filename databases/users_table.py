@@ -1,8 +1,6 @@
 from .database_globals import *
 
-USERS_TABLE_IS_SETUP = False
-
-def create_users_table():
+def createUsersTable():
     
     create_table_statement = '''CREATE TABLE IF NOT EXISTS USERS (
         USER_ID TEXT PRIMARY KEY,
@@ -11,14 +9,7 @@ def create_users_table():
     
     CURSOR.execute(create_table_statement)
 
-def users_table_setup():
-    return USERS_TABLE_IS_SETUP
-
 def appendToUserTable(user_id):
-
-    if not users_table_setup():
-        create_users_table()
-        USERS_TABLE_IS_SETUP = True
 
     append_statement = '''INSERT INTO USERS (
         USER_ID,
@@ -31,10 +22,6 @@ def appendToUserTable(user_id):
 
 def queryUserBalance(user_id):
 
-    if not users_table_setup():
-        create_users_table()
-        USERS_TABLE_IS_SETUP = True
-    
     query_statement = "SELECT BALANCE FROM USERS WHERE USER_ID = ?"
     BALANCE_INDEX = 0
     CURSOR.execute(query_statement, (user_id,))
