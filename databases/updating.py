@@ -49,8 +49,15 @@ def removeFromUpdatingTable(ticker):
 def updateUpdatingTableStocks():
 
     distinct_tickers = queryUpdatingTableStocks() 
+    if not distinct_tickers:
+        return
+
     ticker_values = scrape(distinct_tickers)
-    pass # finish later
+    update_statement = "UPDATE USERS SET CUR_PRICE = ? WHERE TICKER = ?"
+    value_ticker_zip = zip(ticker_values, distinct_tickers)
+
+    CURSOR.executemany(update_statement, (value_ticker_zip,))
+    CONNECTION.commit()
 
 def queryUpdatingTableStocks():
 

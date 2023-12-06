@@ -6,7 +6,6 @@ def createUsersTable():
         USER_ID TEXT PRIMARY KEY,
         BALANCE INTEGER
     )'''
-    
     CURSOR.execute(create_table_statement)
 
 def appendToUserTable(user_id):
@@ -33,7 +32,6 @@ def queryUserBalance(user_id):
         CURSOR.execute(query_statement, (user_id,))
         balance = CURSOR.fetchone()[BALANCE_INDEX]
         return balance
-    
     return result[BALANCE_INDEX]
 
 def updateUserBalance(user_id, balance):
