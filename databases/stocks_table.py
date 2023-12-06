@@ -76,24 +76,13 @@ def updateUserStockAmount(user_id, transac_id, amount):
     CURSOR.execute(update_statement, (amount, user_id, transac_id,))
     CONNECTION.commit()
 
-# def updateUserStockPrices(user_id):       MOVE THIS TO THE SPECIFIC UPDATING TABLE
+def queryDistinctStock():
 
-#     distinct_ticker_statement = f"SELECT DISTINCT TICKER FROM STOCKS WHERE USER_ID = ?"
-#     CURSOR.execute(distinct_ticker_statement, (user_id,))
-#     distinct_tickers = CURSOR.fetchall()
+    distinct_ticker_statement = f"SELECT DISTINCT TICKER FROM STOCKS"
+    CURSOR.execute(distinct_ticker_statement)
+    distinct_tickers = CURSOR.fetchall()
+    return distinct_tickers
     
-#     update_statement = f'''UPDATE {user_id} 
-#                             SET CURRENT_PRICE = ? 
-#                             WHERE TICKER = ?'''
-#     val_tkr_list = []
-
-#     ticker_value_object = getValue(distinct_tickers)
-#     for tkr, val in ticker_value_object:
-#         val_tkr_list.append((val, tkr))
-
-#     CURSOR.executemany(update_statement, val_tkr_list)
-    
-#     CONNECTION.commit()
 
 def removeFromUserStock(user_id, transac_id):
     
