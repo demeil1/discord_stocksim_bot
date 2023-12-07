@@ -16,7 +16,7 @@ Created by Demeil Khoshaba and Andy Mai
 * shorting
 * options
 
-## Bot Slash Commands
+# Bot Slash Commands
 
 # /balance
     * description: returns your Balance
