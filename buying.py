@@ -55,7 +55,6 @@ async def buyStock(user_id, command):
         return f"{command} Task Completed: Ran without error. Cost: {total_transac_cost:.2f}. Balance: {new_balance:.2f}"
 
     except (IndexError, TypeError, ValueError):
-
         return f"{command} Task Terminated: Bad parameters passed."
     
 async def delBuyStock(user_id, command):

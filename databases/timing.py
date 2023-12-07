@@ -25,3 +25,8 @@ def getTransacDate():
     current_time = time.gmtime(current_time)
     date_str = f"{current_time.tm_mon}/{current_time.tm_mday}/{current_time.tm_year}"
     return date_str
+
+def getTimeSinceEpoch():
+    current_time = time.time()
+    return current_time
+
