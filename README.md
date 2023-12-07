@@ -31,7 +31,8 @@ Created by Demeil Khoshaba and Andy Mai
         - "/query *" returns the transaction history of all tickers owned
         - "/query AAPL" returns the transaction history of your AAPL share purchases only
         
-# /buy * description: purchases an amount of shares 
+# /buy
+    * description: purchases an amount of shares 
     * paramaters: 
         - ticker: string (text)
         - number of shares: int (whole number)
