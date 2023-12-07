@@ -1,10 +1,10 @@
-# discord_stocksim_bot
+### discord_stocksim_bot
 
 A stock simulator bot for discord!
 Created by Demeil Khoshaba and Andy Mai
 ==================================================
 
-Functionality
+**Functionality**
 
 * buying
 * target price buying 
@@ -12,18 +12,18 @@ Functionality
 * target price selling
 ==================================================
 
-TODOs
+**TODOs**
 
 * shorting
 * options
 ==================================================
 
-Bot Slash Commands
+##Bot Slash Commands
 
-/balance
+#/balance
     * description: returns your Balance
 
-/query
+#/query
     * description: returns transaction history of ticker(s)
     * parameters: 
         - ticker(s): string (text) seperated by space
@@ -31,8 +31,7 @@ Bot Slash Commands
         - "/query *" returns the transaction history of all tickers owned
         - "/query AAPL" returns the transaction history of your AAPL share purchases only
         
-/buy 
-    * description: purchases an amount of shares 
+#/buy * description: purchases an amount of shares 
     * paramaters: 
         - ticker: string (text)
         - number of shares: int (whole number)
@@ -58,7 +57,7 @@ Bot Slash Commands
             - Correct: "/buy AAPL 5"
             - Troubleshooting: check that you have the correct amount and type of parameters
     
-/delbuy 
+#/delbuy 
     * description: purchases an amount of shares within a cost range
     * protection:
         - To protect against malicious commands, threads are returned if they exceed the time 
@@ -97,7 +96,7 @@ Bot Slash Commands
             - Correct: "buy AAPL 5 0.00 1000.00"
             - Troubleshooting: check that you have the correct amount and type of parameters
 
-/sell 
+#/sell 
     * description: sell an amount of shares 
     * paramaters: 
         - ticker: string (text)
@@ -127,7 +126,7 @@ Bot Slash Commands
             - Correct: "/sell AAPL 5"
             - Troubleshooting: check that you have the correct amount and type of parameters
 
-/delsell 
+#/delsell 
     * description: sell an amount of shares within a cost range
     * protection:
         - To protect against malicious commands, threads are returned if they exceed the time 
