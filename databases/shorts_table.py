@@ -11,6 +11,7 @@ def createShortsTable():
         TICKER TEXT,
         NUM_SHARES INTEGER,
         INITIAL_PRICE INTEGER,
+        STOP_LOSS INTEGER,
         TRANSAC_TYPE TEXT,
         TRANSAC_TIME_SINCE_EPOCH INTEGER
     )''' 
@@ -21,6 +22,8 @@ def appendToShortTable(user_id,
                        ticker,
                        num_shares,
                        initial_price,
+                       stop_loss
+                       transac_type,
                        transac_time):
 
     append_statement = '''INSERT INTO SHORTS (
@@ -29,9 +32,10 @@ def appendToShortTable(user_id,
         TICKER,
         NUM_SHARES,
         INITIAL_PRICE,
+        STOP_LOSS,
         TRANSAC_TYPE,
         TRANSAC_TIME_SINCE_EPOCH
-    ) VALUES(?, ?, ?, ?, ?, ?, ?)'''
+    ) VALUES(?, ?, ?, ?, ?, ?, ?, ?)'''
 
     CURSOR.execute(append_statement, (
         user_id,
@@ -39,6 +43,8 @@ def appendToShortTable(user_id,
         ticker,
         num_shares,
         initial_price,
+        stop_loss,
+        transac_type,
         transac_time
     ))
     CONNECTION.commit()
