@@ -29,7 +29,7 @@ def setUpdatingTableStocks():
             appendToUpdatingTable(ticker, value)
     if tickers_to_remove:
         for ticker in tickers_to_remove:
-            removeFromUpdatingTable(ticker):
+            removeFromUpdatingTable(ticker)
 
 def appendToUpdatingTable(ticker, value):
 
@@ -59,10 +59,18 @@ def updateUpdatingTableStocks():
     CURSOR.executemany(update_statement, (value_ticker_zip,))
     CONNECTION.commit()
 
+def queryUpdatingStockPrice(ticker):
+
+    query_statement = "SELECT CUR_PRICE FROM UPDATING WHERE TICKER = ?"
+    CURSOR.execute(query_statement, (ticker,))
+    cur_price = CURSOR.fetchall()
+    return cur_price
+
 def queryUpdatingTableStocks():
 
     query_statement = "SELECT TICKER FROM UPDATING"
     CURSOR.execute(query_statement)
     tickers = CURSOR.fetchall()
     return tickers
+
 
