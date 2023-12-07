@@ -56,7 +56,7 @@ async def buyStock(user_id, command):
 
     except (IndexError, TypeError, ValueError):
 
-        return f"{command} Task Terminated: Bad paramaters passed."
+        return f"{command} Task Terminated: Bad parameters passed."
     
 async def delBuyStock(user_id, command):
     CURRENT_VALUE = 0

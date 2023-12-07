@@ -24,7 +24,7 @@ async def sellStock(user_id, command):
         ticker = command[TICKER].upper()
         curr_price = (await getValue([ticker]))[CURRENT_VALUE]
         if curr_price == None:
-            return f"{command} Task Terminated: Can't find ticker"
+            return f"{command} Task Terminated: Ticker wasn't found"
 
         transac_instances = querySpecificUserStock(user_id, ticker)
 
@@ -67,7 +67,7 @@ async def sellStock(user_id, command):
         if num_shares_to_sell == 0:
             return f"{command} Task Completed: Ran without error. Profit: {total_profit:.2f}. Balance: {new_balance:.2f}"
         else:
-            return f"{command} Task Completed: Warning: '# to sell > # owned'. Profit: {total_profit:.2f}. Balance: {new_balance:.2f}" # finish
+            return f"{command} Task Completed: Warning: '# to sell > # owned'. Profit: {total_profit:.2f}. Balance: {new_balance:.2f}" 
 
     except (IndexError, TypeError, ValueError):
 
@@ -95,7 +95,7 @@ async def delSellStock(user_id, command):
         ticker = command[TICKER].upper()       
         curr_price = (await getValue([ticker]))[CURRENT_VALUE]
         if curr_price == None:
-            return f"{command} Task Terminated: Couldn't find ticker"
+            return f"{command} Task Terminated: Ticker wasn't ticker"
 
         transac_instances = querySpecificUserStock(user_id, ticker)
 
