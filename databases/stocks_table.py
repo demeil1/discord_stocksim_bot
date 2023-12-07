@@ -12,7 +12,6 @@ def createStockTable():
         TRANSAC_DATE TEXT,
         TRANSAC_TIME TEXT
     )'''
-
     CURSOR.execute(create_table_statement)
 
 def appendToStockTable(user_id,
@@ -56,7 +55,6 @@ def queryUserStock(user_id):
     results = CURSOR.fetchall()
     if results == []:
         return None
-
     return results
 
 def querySpecificUserStock(user_id, ticker):
@@ -67,7 +65,6 @@ def querySpecificUserStock(user_id, ticker):
     results = CURSOR.fetchall()
     if results == []:
         return None
-        
     return results
 
 def updateUserStockAmount(user_id, transac_id, amount): 
@@ -88,5 +85,4 @@ def removeFromUserStock(user_id, transac_id):
     
     remove_statement = f"DELETE FROM STOCKS WHERE USER_ID = ? AND TRANSAC_ID = ?"
     CURSOR.execute(remove_statement, (user_id, transac_id,))
-
     CONNECTION.commit()
