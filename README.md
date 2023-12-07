@@ -4,19 +4,17 @@ A stock simulator bot for discord!
 Created by Demeil Khoshaba and Andy Mai
 ==================================================
 
-**Functionality**
+# Functionality
 
 * buying
 * target price buying 
 * selling
 * target price selling
-==================================================
 
-**TODOs**
+# TODOs
 
 * shorting
 * options
-==================================================
 
 ## Bot Slash Commands
 
