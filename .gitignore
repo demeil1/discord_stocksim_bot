@@ -155,6 +155,7 @@ cython_debug/
 # discord_stocksim_bot ignores
 STOCKSIM.db
 bot_config.py
+.DS_Store
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
