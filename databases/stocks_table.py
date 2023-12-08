@@ -68,6 +68,23 @@ def querySpecificUserStock(user_id, ticker):
         return None
     return results
 
+def queryDistinctUserStock(user_id):
+
+    query_statement = "SELECT DISTINCT TICKER FROM STOCKS WHERE USER_ID = ?"
+    CURSOR.execute(query_statement, (user_id,))
+
+    results = CURSOR.fetchall()
+    if results == []:
+        return None
+    return results
+
+def queryUserStockAmount(user_id, ticker):
+
+    query_statement = "SELECT SUM(NUM_SHARES) WHERE USER_ID = ? AND TICKER = ?"
+    CURSOR.execute(query_statement, (user_id, ticker,))
+    result = CURSOR.fetchall()
+    return result
+
 def updateUserStockAmount(user_id, transac_id, amount): 
 
     update_statement = f"UPDATE STOCKS SET NUM_SHARES = ? WHERE USER_ID = ? AND TRANSAC_ID = ?"
