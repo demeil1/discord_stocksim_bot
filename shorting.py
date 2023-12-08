@@ -4,6 +4,7 @@ from databses.timing import marketHours, getTimeSinceEpoch
 from databases.shorts_table import appendToShortsTable, querySpecificUserShorts, removeFromUserShort
 from databases.users_table import queryUserBalance, updateUserBalance
 from databases.stocks_table import queryDistinctUserStock, queryUserStockAmount
+from selling import sellStock
 
 async def shortStock(user_id, command):
     CURRENT_VALUE = 0
@@ -78,25 +79,32 @@ async def coverShort(user_id, command):
             return f"{command} Task Completed: Ran without error. Profit: {profit}. Balance: {balance}"
         else: 
             # query distinct tickers owned by individual queryDistinctUserStock
-            distinct_tickers_owned = queryDistinctUserStock(user_id)
-            if distinct_tickers_owned == None:
+            user_stock = queryDistinctUserStock(user_id)
+            if user_stock == None:
                 new_balance = balance + profit
                 updateUserBalance(user_id, new_balance)
                 removeFromUserShort(user_id, transac_id)
                 return f"{command} Task Completed: Ran without error. Profit: {profit}. Balance: {balance}"
             # get values of distinct stock getValue
-            cur_ticker_values = await getValue(distinct_tickers_owned)
+            share_values = await getValue(user_stock)
             # calculate how much of each stock to sell to get money to cover loss
             num_shares = []
-            for ticker in distinct_tickers_owned:
+            for ticker in user_stock:
                 num_shares.append(queryUserStockAmount(user_id, ticker))
 
-            ticker_amount_value_zip = zip(distinct_tickers_owned, num_shares, cur_ticker_values)
+            ticker_amount_value_list = list(zip(user_stock, num_shares, share_values))
+            ticker_amount_value_list.sort(key = lambda x: x[2], reverse = True)
             for tkr, amount, value in ticker_amount_value_zip:
-                remainder = (amount * value) % profit
-            # create a command and pass the user_id and command sellStock
-            # update user balance if we sell to much and end up going a bit positive
+                shares_to_sell = min(amount, (profit // value))
+                profit -= shares_to_sell * value
+                # create a command and pass the user_id and command sellStock
+                command = [ticker, shares_to_sell]
+                sellStock(user_id, command)
+                
+            new_balance = balance + profit
+            updateUserBalance(user_id, new_balance)
             removeFromUserShort(user_id, transac_id)
+            return f"{command} Task Completed: Ran without error. Profit: {profit}. Balance: {balance}"
 
     except (IndexError, TypeError, ValueError):
         return f"{command} Task Terminated: Bad parameters passed."
