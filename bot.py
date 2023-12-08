@@ -13,7 +13,7 @@ async def on_ready():
     print(f"\nSynced {len(sync)} command(s)")
     print(f"\nSuccessful: We have logged in as {CLIENT.user}")
 
-@CLIENT.tree.command(description="buy [ticker: string] [# of shares: integer]")
+@CLIENT.tree.command(description="buy [ticker: text] [# of shares: integer]")
 @app_commands.describe(ticker="ticker",
                        num_shares="# of shares")
 async def buy(interaction: discord.Interaction, 
@@ -26,7 +26,7 @@ async def buy(interaction: discord.Interaction,
 
 #fix commands below and set them up in the correct guild
 
-@CLIENT.tree.command(description = "target price buy [ticker] [# of shares: integer] [low: decimal] [high: decimal]")
+@CLIENT.tree.command(description = "target price buy [ticker: text] [# of shares: integer] [low: decimal] [high: decimal]")
 @app_commands.describe(ticker = "ticker:",
                        num_shares = "# of shares:", 
                        tp_low = "low target price:", 
@@ -41,7 +41,7 @@ async def delbuy(interaction: discord.Interaction,
     result = await delBuyStock(interaction.user.id, parsed_message)
     await interaction.response.send_message(result)
 
-@CLIENT.tree.command(description = "sell [ticker] [# of shares: integer]")
+@CLIENT.tree.command(description = "sell [ticker: text] [# of shares: integer]")
 @app_commands.describe(ticker = "ticker:", 
                        num_shares = "# of shares:")
 async def sell(interaction: discord.Interaction,
@@ -52,7 +52,7 @@ async def sell(interaction: discord.Interaction,
     result = await sellStock(interaction.user.id, parsed_message)
     await interaction.response.send_message(result)
 
-@CLIENT.tree.command(description = "target price sell [ticker] [# of shares: integer] [low: decimal] [high: decimal]")
+@CLIENT.tree.command(description = "target price sell [ticker: text] [# of shares: integer] [low: decimal] [high: decimal]")
 @app_commands.describe(ticker = "ticker:", 
                        num_shares = "# of shares:", 
                        tp_low = "low target price:", 
@@ -65,6 +65,26 @@ async def delsell(interaction: discord.Interaction,
 
     parsed_message = [ticker.upper(), num_shares, tp_low, tp_high]
     result = await delSellStock(interaction.user.id, parsed_message)
+    await interaction.response.send_message(result)
+
+@CLIENT.tree.command(description = "short [ticker: text] [# of shares]")
+@app_commands.describe(ticker = "ticker:",
+                       num_shares = "# of shares:")
+async def short(interaction: discord.Interaction,
+                ticker: str
+                num_shares: int):
+
+    parsed_message = [ticker.upper(), num_shares]
+    result = await shortStock(interaction.user.id, parsed_message)
+    await interaction.response.send_message(result)
+
+@CLIENT.tree.command(description = "cover shorted [transaction: id]")
+@app_commands.describe(transac_id - "transaction id:")
+async def cover(interaction: discord.Interaction,
+                transac_id: str):
+
+    parsed_message = [transac_id]
+    result = await coverShort(interaction.user.id, parsed_message)
     await interaction.response.send_message(result)
 
 @CLIENT.tree.command(description = "returns transactions of all purchases or purchases of specified tickers")
