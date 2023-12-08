@@ -22,7 +22,7 @@ def appendToShortTable(user_id,
                        ticker,
                        num_shares,
                        initial_price,
-                       stop_loss
+                       stop_loss,
                        transac_type,
                        transac_time):
 

@@ -71,7 +71,7 @@ async def delsell(interaction: discord.Interaction,
 @app_commands.describe(ticker = "ticker:",
                        num_shares = "# of shares:")
 async def short(interaction: discord.Interaction,
-                ticker: str
+                ticker: str,
                 num_shares: int):
 
     parsed_message = [ticker.upper(), num_shares]
@@ -79,7 +79,7 @@ async def short(interaction: discord.Interaction,
     await interaction.response.send_message(result)
 
 @CLIENT.tree.command(description = "cover shorted [transaction: id]")
-@app_commands.describe(transac_id - "transaction id:")
+@app_commands.describe(transac_id = "transaction id:")
 async def cover(interaction: discord.Interaction,
                 transac_id: str):
 
