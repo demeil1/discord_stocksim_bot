@@ -3,6 +3,7 @@ from databases.ids import getTransacId, userIdToString
 from databses.timing import marketHours, getTimeSinceEpoch
 from databases.shorts_table import appendToShortsTable, querySpecificUserShorts, removeFromUserShort
 from databases.users_table import queryUserBalance, updateUserBalance
+from databases.stocks_table import queryDistinctUserStock, queryUserStockAmount
 
 async def shortStock(user_id, command):
     CURRENT_VALUE = 0
@@ -28,7 +29,7 @@ async def shortStock(user_id, command):
         balance = queryUserBalance(user_id)
         potential_loss = (stop_loss - share_price) * num_shares
         if potential_loss < balance:
-            return f"{command} Task Terminated: Potential loss > Current balance. Potential loss {potential_loss:.2f}. Balance = {balance}"
+            return f"{command} Task Terminated: Potential loss > Current balance. Potential loss: {potential_loss:.2f}. Balance: {balance}"
 
         transac_time = getTimeSinceEpoch()
         transac_id = getTransacId()
@@ -76,13 +77,25 @@ async def coverShort(user_id, command):
             removeFromUserShort(user_id, transac_id)
             return f"{command} Task Completed: Ran without error. Profit: {profit}. Balance: {balance}"
         else: 
-            while profit < 0:
-                # sell stocks to recoup loss
-                # query distinct tickers owned by individual queryDistinctUserStock
-                # get values of distinct stock getValue
-                # calculate how much of each stock to sell to get money to cover loss
-                # created a command and pass the user_id and command sellStock
-                # update user balance if we sell to much and end up going a bit positive
+            # query distinct tickers owned by individual queryDistinctUserStock
+            distinct_tickers_owned = queryDistinctUserStock(user_id)
+            if distinct_tickers_owned == None:
+                new_balance = balance + profit
+                updateUserBalance(user_id, new_balance)
+                removeFromUserShort(user_id, transac_id)
+                return f"{command} Task Completed: Ran without error. Profit: {profit}. Balance: {balance}"
+            # get values of distinct stock getValue
+            cur_ticker_values = await getValue(distinct_tickers_owned)
+            # calculate how much of each stock to sell to get money to cover loss
+            num_shares = []
+            for ticker in distinct_tickers_owned:
+                num_shares.append(queryUserStockAmount(user_id, ticker))
+
+            ticker_amount_value_zip = zip(distinct_tickers_owned, num_shares, cur_ticker_values)
+            for tkr, amount, value in ticker_amount_value_zip:
+                remainder = (amount * value) % profit
+            # create a command and pass the user_id and command sellStock
+            # update user balance if we sell to much and end up going a bit positive
             removeFromUserShort(user_id, transac_id)
 
     except (IndexError, TypeError, ValueError):

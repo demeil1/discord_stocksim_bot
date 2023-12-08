@@ -1,4 +1,5 @@
 from .database_globals import *
+from .yf_scraper import getValue
 
 def createStockTable():
 
