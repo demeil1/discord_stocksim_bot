@@ -60,9 +60,6 @@ async def sellStock(user_id, command):
                 updateUserStockAmount(user_id, transac_id, transac_num_shares)
                 break
 
-        if new_balance < 0:
-            new_balance = 0
-
         updateUserBalance(user_id, new_balance)
         if num_shares_to_sell == 0:
             return f"{command} Task Completed: Ran without error. Profit: {total_profit:.2f}. Balance: {new_balance:.2f}"
@@ -139,9 +136,6 @@ async def delSellStock(user_id, command):
                 num_shares_to_sell = 0
                 updateUserStockAmount(user_id, transac_id, transac_num_shares)
                 break
-
-        if new_balance < 0:
-            new_balance = 0
 
         updateUserBalance(user_id, new_balance)
         if num_shares_to_sell == 0:
