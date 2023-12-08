@@ -1,6 +1,7 @@
 from bot_config import *
 from buying import buyStock, delBuyStock
 from selling import sellStock, delSellStock
+from shorting import shortStock, coverShort
 from databases.ids import userIdToString
 from databases.stocks_table import queryUserStock, querySpecificUserStock
 from databases.users_table import queryUserBalance
@@ -69,12 +70,14 @@ async def delsell(interaction: discord.Interaction,
 
 @CLIENT.tree.command(description = "short [ticker: text] [# of shares]")
 @app_commands.describe(ticker = "ticker:",
-                       num_shares = "# of shares:")
+                       num_shares = "# of shares:",
+                       stop_loss = "stop loss:")
 async def short(interaction: discord.Interaction,
                 ticker: str,
-                num_shares: int):
+                num_shares: int,
+                stop_loss: float):
 
-    parsed_message = [ticker.upper(), num_shares]
+    parsed_message = [ticker.upper(), num_shares, stop_loss]
     result = await shortStock(interaction.user.id, parsed_message)
     await interaction.response.send_message(result)
 
@@ -102,7 +105,7 @@ async def query(interaction: discord.Interaction,
             return
         
         for t in result:
-            transacs += f"{t[2:]}\n"
+            transacs += f"{t[1:]}\n"
     else:
         tickers = tickers.strip().split()
         for ticker in tickers:
@@ -113,7 +116,7 @@ async def query(interaction: discord.Interaction,
                 transacs += result
                    
             for t in result:
-                transacs += f"{t[2:]}\n"
+                transacs += f"{t[1:]}\n"
 
     await interaction.response.send_message(transacs)
 
