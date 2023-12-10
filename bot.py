@@ -5,6 +5,7 @@ from shorting import shortStock, coverShort
 from databases.ids import userIdToString
 from databases.stocks_table import queryUserStock, querySpecificUserStock
 from databases.users_table import queryUserBalance
+from networth import calculateUserNetWorth
 # from commands import buying, selling, options, shorting, pichart, leaderboard
 
 @CLIENT.event
@@ -125,4 +126,11 @@ async def balance(interaction: discord.Interaction):
 
     user_id = userIdToString(interaction.user.id)
     balance = queryUserBalance(user_id)
-    await interaction.response.send_message(f"{interaction.user}'s balance = $ {balance:.2f}")
+    await interaction.response.send_message(f"{interaction.user}'s balance: ${balance:.2f}")
+
+@CLIENT.tree.command(description = "returns your net worth")
+async def networth(interaction: discord.Interaction):
+
+    user_id = userIdToString(interaction.user.id)
+    networth = await calculateUserNetWorth(user_id)
+    await interaction.response.send_message(f"{interaction.user}'s networth: ${networth:.2f}")
