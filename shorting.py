@@ -4,7 +4,7 @@ from databases.timing import marketHours, getTimeSinceEpoch
 from databases.shorts_table import appendToShortTable, querySpecificUserShorts, removeFromUserShort
 from databases.users_table import queryUserBalance, updateUserBalance
 from databases.stocks_table import queryDistinctUserStock, queryUserStockAmount
-from selling import sellStock
+from networth import calculateUserNetWorth
 
 async def shortStock(user_id, command):
     CURRENT_VALUE = 0
@@ -27,9 +27,9 @@ async def shortStock(user_id, command):
         if stop_loss <= share_price:
             return f"{command} Task Terminated: Stop loss ({stop_loss:.2f}) < or = current {ticker} share price ({share_price:.2f})"
 
-        balance = queryUserBalance(user_id)
+        networth = calaculateUserNetWorth(user_id)
         potential_loss = (stop_loss - share_price) * num_shares
-        if potential_loss > balance:
+        if potential_loss > networth:
             return f"{command} Task Terminated: Potential loss > Current balance. Potential loss: {potential_loss:.2f}. Balance: {balance:.2f}"
 
         transac_time = getTimeSinceEpoch()
@@ -70,7 +70,7 @@ async def coverShort(user_id, command):
 
         cur_price = (await getValue([ticker]))[CURRENT_VALUE]
 
-        profit = (cur_price - initial_price) * num_shares
+        profit = (initial_price - cur_price) * num_shares
         new_balance = balance + profit
         updateUserBalance(user_id, new_balance)
         removeFromUserShort(user_id, transac_id)
