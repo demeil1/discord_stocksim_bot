@@ -84,15 +84,18 @@ async def delBuyStock(user_id, command):
 
         max_transac_cost = target_price_high * num_shares
         
-        # need to check balance from user database
         balance = queryUserBalance(user_id)
         if max_transac_cost > balance:
             return f"{command} Task Terminated: Account balance too low. Balance: {balance:.2f}"
-
+        
         while (cur_value < target_price_low) or (cur_value > target_price_high):
             
             if not marketHours():
                 return f"{command} Task Terminated: Ran into after hours"
+
+            balance = queryUserBalance(user_id)
+            if max_transac_cost > balance:
+                return f"{command} Task Terminated: Account balance too low. Balance: {balance:.2f}"
             
             cur_value = (await getValue([ticker]))[CURRENT_VALUE]
 
