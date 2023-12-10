@@ -95,7 +95,6 @@ async def delSellStock(user_id, command):
             return f"{command} Task Terminated: Ticker wasn't ticker"
 
         transac_instances = querySpecificUserStock(user_id, ticker)
-
         if transac_instances == None:
             return f"{command} Task Terminated: No {ticker} stock owned"
 
@@ -116,6 +115,7 @@ async def delSellStock(user_id, command):
         TRANSAC_NUM_SHARES = 3
         TRANSAC_INITIAL_PRICE = 4
 
+        transac_instances = querySpecificUserStock(user_id, ticker)
         for transac in transac_instances:
             transac_id = transac[TRANSAC_ID]
             transac_num_shares = transac[TRANSAC_NUM_SHARES]
