@@ -76,14 +76,14 @@ def queryDistinctUserStock(user_id):
     results = CURSOR.fetchall()
     if results == []:
         return None
-    return results
+    return results[0] # maybe remove index
 
 def queryUserStockAmount(user_id, ticker):
 
-    query_statement = "SELECT SUM(NUM_SHARES) WHERE USER_ID = ? AND TICKER = ?"
+    query_statement = "SELECT SUM(NUM_SHARES) FROM STOCKS WHERE USER_ID = ? AND TICKER = ?"
     CURSOR.execute(query_statement, (user_id, ticker,))
-    result = CURSOR.fetchall()
-    return result
+    result = CURSOR.fetchone()
+    return result[0] if result else 0
 
 def updateUserStockAmount(user_id, transac_id, amount): 
 
