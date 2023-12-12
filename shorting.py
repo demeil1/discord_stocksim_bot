@@ -1,9 +1,8 @@
 from databases.yf_scraper import getValue
 from databases.ids import getTransacId, userIdToString
-from databases.timing import marketHours, getTimeSinceEpoch
-from databases.shorts_table import appendToShortTable, querySpecificUserShorts, removeFromUserShort
+from databases.timing import getTimeSinceEpoch
+from databases.shorts_table import appendToShortTable, querySpecificUserShorts, removeFromUserShort, queryShortById
 from databases.users_table import queryUserBalance, updateUserBalance
-from databases.stocks_table import queryDistinctUserStock, queryUserStockAmount
 from networth import calculateUserNetWorth
 
 async def shortStock(user_id, command):
@@ -27,7 +26,7 @@ async def shortStock(user_id, command):
         if stop_loss <= share_price:
             return f"{command} Task Terminated: Stop loss ({stop_loss:.2f}) < or = current {ticker} share price ({share_price:.2f})"
 
-        networth = calaculateUserNetWorth(user_id)
+        networth = await calculateUserNetWorth(user_id)
         potential_loss = (stop_loss - share_price) * num_shares
         if potential_loss > networth:
             return f"{command} Task Terminated: Potential loss > Current balance. Potential loss: {potential_loss:.2f}. Balance: {balance:.2f}"
@@ -60,7 +59,7 @@ async def coverShort(user_id, command):
         transac_id = command[TRANSAC_ID]
         balance = queryUserBalance(user_id)
         
-        transaction = querySpecificUserShorts(user_id, transac_id)
+        transaction = queryShortById(user_id, transac_id)[0]
         if transaction == None:
             return f"{command} Task Terminated: Couldn't pinpoint transaction by ID"
 
@@ -74,7 +73,7 @@ async def coverShort(user_id, command):
         new_balance = balance + profit
         updateUserBalance(user_id, new_balance)
         removeFromUserShort(user_id, transac_id)
-        return f"{command} Task Completed: Ran without error. Profit: {profit}. Balance: {balance}"
+        return f"{command} Task Completed: Ran without error. Profit: {profit:.2f}. Balance: {new_balance:.2f}"
 
     except (IndexError, TypeError, ValueError):
         return f"{command} Task Terminated: Bad parameters passed."
