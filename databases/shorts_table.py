@@ -61,7 +61,7 @@ def queryUserShorts(user_id):
 
 def querySpecificUserShorts(user_id, ticker):
     
-    query_statement = "SELECT * FROM STOCKS WHERE USER_ID = ? AND TICKER = ?"
+    query_statement = "SELECT * FROM SHORTS WHERE USER_ID = ? AND TICKER = ?"
     CURSOR.execute(query_statement, (user_id, ticker,))
 
     results = CURSOR.fetchall()
@@ -69,8 +69,18 @@ def querySpecificUserShorts(user_id, ticker):
         return None
     return results
 
+def queryShortById(user_id, transac_id):
+
+    query_statement = "SELECT * FROM SHORTS WHERE USER_ID = ? AND TRANSAC_ID = ?"
+    CURSOR.execute(query_statement, (user_id, transac_id,))
+
+    result = CURSOR.fetchall()
+    if result == []:
+        return None
+    return result
+
 def removeFromUserShort(user_id, transac_id):
 
-    remove_statement = "DELETE FROM STOCKS WHERE USER_ID = ? AND TRANSAC_ID = ?"
+    remove_statement = "DELETE FROM SHORTS WHERE USER_ID = ? AND TRANSAC_ID = ?"
     CURSOR.execute(remove_statement, (user_id, transac_id,))
     CONNECTION.commit()
