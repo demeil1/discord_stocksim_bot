@@ -76,7 +76,7 @@ def queryDistinctUserStock(user_id):
     results = CURSOR.fetchall()
     if results == []:
         return None
-    return results[0] # maybe remove index
+    return results
 
 def queryUserStockAmount(user_id, ticker):
 
