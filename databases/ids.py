@@ -12,7 +12,7 @@ def userIdToString(user_id):
 def getTransacId():
 
     random.seed()
-    id_len = 32
+    id_len = 16
     chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     nums = "0123456789"
     t_id = ""
