@@ -115,7 +115,7 @@ async def query(interaction: discord.Interaction,
             transacs += "It's empty in here... Nothing in shorts database\n"
         else:
             for t in shorts_result:
-                transacs += f"('{t[1]}', {t[2]}', {t[3]}, {t[4]:.2f}, {t[5]:.2f}, '{t[6]}', '{t[7]}')\n"
+                transacs += f"('{t[1]}', {t[2]}', {t[3]}, {t[4]:.2f}, {t[5]:.2f}, '{t[6]}', '{t[7]}', '{t[8]}')\n"
     else:
         stocks_str = "----- Stocks Owned -----\n\n"
         shorts_str = "----- Short Positions -----\n\n"
@@ -135,7 +135,7 @@ async def query(interaction: discord.Interaction,
                 shorts_str += f"\nNo {ticker.upper()} short positions\n"
             else:
                 for t in shorts_result:
-                    shorts_str += f"('{t[1]}', '{t[2]}', {t[3]}, {t[4]:.2f}, {t[5]}, '{t[6]}', '{t[7]}')\n" # {t[5]:.2f}
+                    shorts_str += f"('{t[1]}', '{t[2]}', {t[3]}, {t[4]:.2f}, {t[5]:.2f}, '{t[6]}', '{t[7]}', '{t[8]}')\n"
         transacs = stocks_str + "\n" + shorts_str
     await interaction.response.send_message(transacs)
 
