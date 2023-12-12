@@ -13,7 +13,8 @@ def createShortsTable():
         INITIAL_PRICE INTEGER,
         STOP_LOSS INTEGER,
         TRANSAC_TYPE TEXT,
-        TRANSAC_TIME_SINCE_EPOCH INTEGER
+        TRANSAC_DATE TEXT,
+        TRANSAC_TIME TEXT
     )''' 
     CURSOR.execute(create_table_statement)
 
@@ -24,6 +25,7 @@ def appendToShortTable(user_id,
                        initial_price,
                        stop_loss,
                        transac_type,
+                       transac_date,
                        transac_time):
 
     append_statement = '''INSERT INTO SHORTS (
@@ -34,8 +36,9 @@ def appendToShortTable(user_id,
         INITIAL_PRICE,
         STOP_LOSS,
         TRANSAC_TYPE,
-        TRANSAC_TIME_SINCE_EPOCH
-    ) VALUES(?, ?, ?, ?, ?, ?, ?, ?)'''
+        TRANSAC_DATE,
+        TRANSAC_TIME
+    ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)'''
 
     CURSOR.execute(append_statement, (
         user_id,
@@ -45,6 +48,7 @@ def appendToShortTable(user_id,
         initial_price,
         stop_loss,
         transac_type,
+        transac_date,
         transac_time
     ))
     CONNECTION.commit()
