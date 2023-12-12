@@ -1,6 +1,6 @@
 from databases.yf_scraper import getValue
 from databases.ids import getTransacId, userIdToString
-from databases.timing import getTimeSinceEpoch
+from databases.timing import getTransacTime, getTransacDate
 from databases.shorts_table import appendToShortTable, querySpecificUserShorts, removeFromUserShort, queryShortById
 from databases.users_table import queryUserBalance, updateUserBalance
 from networth import calculateUserNetWorth
@@ -31,7 +31,8 @@ async def shortStock(user_id, command):
         if potential_loss > networth:
             return f"{command} Task Terminated: Potential loss > Current balance. Potential loss: {potential_loss:.2f}. Balance: {balance:.2f}"
 
-        transac_time = getTimeSinceEpoch()
+        transac_time = getTransacTime()
+        transac_date = getTransacDate()
         transac_id = getTransacId()
         transac_type = "short" 
         appendToShortTable(user_id,
@@ -41,6 +42,7 @@ async def shortStock(user_id, command):
                            share_price,
                            stop_loss,
                            transac_type,
+                           transac_date,
                            transac_time)
         
         return f"{command} Task Completed: Cover your position, or it will be done for you when the stop loss is hit."
