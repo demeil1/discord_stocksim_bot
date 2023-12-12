@@ -8,7 +8,9 @@ async def calculateUserNetWorth(user_id):
     networth = queryUserBalance(user_id)
 
     distinct_stocks = queryDistinctUserStock(user_id)
-    user_stocks = [ticker[0] for ticker in distinct_stocks]
+    user_stocks = None
+    if distinct_stocks:
+        user_stocks = [ticker[0] for ticker in distinct_stocks]
     if user_stocks:
         stock_shares = []
         for stock in user_stocks:
