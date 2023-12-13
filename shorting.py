@@ -1,7 +1,7 @@
 from databases.yf_scraper import getValue
-from databases.ids import getTransacId, userIdToString
+from databases.ids import getTransacId 
 from databases.timing import getTransacTime, getTransacDate
-from databases.shorts_table import appendToShortTable, querySpecificUserShorts, removeFromUserShort, queryShortById
+from databases.shorts_table import appendToShortTable, querySpecificUserShorts, removeFromUserShort, queryShortById, queryDistinctShorts, queryShortsByTicker
 from databases.users_table import queryUserBalance, updateUserBalance
 from networth import calculateUserNetWorth
 
@@ -11,7 +11,6 @@ async def shortStock(user_id, command):
     NUM_SHARES = 1
     STOP_LOSS = 2
     try:
-        user_id = userIdToString(user_id)
         num_shares = command[NUM_SHARES]
 
         if num_shares <= 0:
@@ -57,13 +56,13 @@ async def coverShort(user_id, command):
     NUM_SHARES = 3 
     INITIAL_PRICE = 4    
     try:
-        user_id = userIdToString(user_id)
         transac_id = command[TRANSAC_ID]
         balance = queryUserBalance(user_id)
         
-        transaction = queryShortById(user_id, transac_id)[0]
-        if transaction == None:
+        result = queryShortById(user_id, transac_id)
+        if result == None:
             return f"{command} Task Terminated: Couldn't pinpoint transaction by ID"
+        transaction = result[0]
 
         num_shares = transaction[NUM_SHARES]
         initial_price = transaction[INITIAL_PRICE]
@@ -79,3 +78,25 @@ async def coverShort(user_id, command):
 
     except (IndexError, TypeError, ValueError):
         return f"{command} Task Terminated: Bad parameters passed."
+
+async def checkShortPositions():
+    results = queryDistinctShorts() 
+
+    distinct_tickers = [ticker[0] for ticker in results]
+    if not distinct_tickers:
+        return
+
+    ticker_val_dict = {}
+    ticker_vals = await getValue(distinct_tickers)
+    for ticker in range(len(distinct_tickers)):
+        ticker_val_dict[distinct_tickers[ticker]] = ticker_vals[ticker]
+
+    USER_ID = 0
+    TRANSAC_ID = 1
+    TICKER = 2
+    STOP_LOSS = 5
+    transac_list = [queryShortsByTicker(ticker) for ticker in distinct_tickers]
+    transac_list = [transac[0] for transac in transac_list]
+    for transac in transac_list:
+        if transac[STOP_LOSS] <= ticker_val_dict[transac[TICKER]]:
+            await coverShort(transac[USER_ID], [transac[TRANSAC_ID]])

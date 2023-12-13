@@ -5,7 +5,6 @@
 # at the end of the trading day 
 # and sent a message to inform the user
 from databases.yf_scraper import getValue
-from databases.ids import userIdToString
 from databases.timing import marketHours
 from databases.stocks_table import updateUserStockAmount, querySpecificUserStock, removeFromUserStock
 from databases.users_table import queryUserBalance, updateUserBalance
@@ -15,7 +14,6 @@ async def sellStock(user_id, command):
     TICKER = 0
     AMOUNT = 1
     try:
-        user_id = userIdToString(user_id)
         num_shares_to_sell = command[AMOUNT]
         
         if num_shares_to_sell <= 0: 
@@ -77,7 +75,6 @@ async def delSellStock(user_id, command):
     TP_LOW = 2
     TP_HIGH = 3
     try:
-        user_id = userIdToString(user_id)
         num_shares_to_sell = command[AMOUNT]
         
         if num_shares_to_sell <= 0: 
