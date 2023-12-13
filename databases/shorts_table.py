@@ -83,6 +83,26 @@ def queryShortById(user_id, transac_id):
         return None
     return result
 
+def queryDistinctShorts():
+
+    query_statement = "SELECT DISTINCT TICKER FROM SHORTS"
+    CURSOR.execute(query_statement)
+
+    results = CURSOR.fetchall()
+    if results == []:
+        return None 
+    return results
+
+def queryShortsByTicker(ticker):
+
+    query_statement = "SELECT * FROM SHORTS WHERE TICKER = ?"
+    CURSOR.execute(query_statement, (ticker,))
+
+    results = CURSOR.fetchall()
+    if results == []:
+        return None
+    return results 
+
 def removeFromUserShort(user_id, transac_id):
 
     remove_statement = "DELETE FROM SHORTS WHERE USER_ID = ? AND TRANSAC_ID = ?"
