@@ -6,7 +6,6 @@ from databases.users_table import queryUserBalance, updateUserBalance
 from networth import calculateUserNetWorth
 
 def shortStock(user_id, command):
-    CURRENT_VALUE = 0
     TICKER = 0
     NUM_SHARES = 1
     STOP_LOSS = 2
@@ -17,7 +16,7 @@ def shortStock(user_id, command):
             return f"{command} Task Terminated: Can't purchase negative or zero shares"
 
         ticker = command[TICKER].upper()
-        share_price = getValue([ticker])[CURRENT_VALUE]
+        share_price = getValue([ticker])
         if share_price == None:
             return f"{command} Task Terminated: Ticker wasn't found"
         
@@ -50,7 +49,6 @@ def shortStock(user_id, command):
         return f"{command} Task Terminated: Bad parameters passed."
 
 def coverShort(user_id, command):
-    CURRENT_VALUE = 0
     TRANSAC_ID = 0
     TICKER = 2
     NUM_SHARES = 3 
@@ -68,7 +66,7 @@ def coverShort(user_id, command):
         initial_price = transaction[INITIAL_PRICE]
         ticker = transaction[TICKER]
 
-        cur_price = getValue([ticker])[CURRENT_VALUE]
+        cur_price = getValue([ticker])
 
         profit = (initial_price - cur_price) * num_shares
         new_balance = balance + profit

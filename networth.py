@@ -8,7 +8,7 @@ def calculateUserNetWorth(user_id):
     networth = queryUserBalance(user_id)
 
     distinct_stocks = queryDistinctUserStock(user_id)
-    user_stocks = None
+    user_stocks = []
     if distinct_stocks:
         user_stocks = [ticker[0] for ticker in distinct_stocks]
     if user_stocks:
@@ -16,6 +16,8 @@ def calculateUserNetWorth(user_id):
         for stock in user_stocks:
             stock_shares.append(queryUserStockAmount(user_id, stock))
         share_values = getValue(user_stocks)
+        if not (type(share_values) is list):
+            share_values = [share_values]
 
         stock_share_value_zip = zip(user_stocks, stock_shares, share_values)
         for tkr, ns, val in stock_share_value_zip:

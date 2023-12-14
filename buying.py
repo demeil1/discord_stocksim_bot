@@ -12,7 +12,6 @@ from databases.users_table import queryUserBalance, updateUserBalance
 
 
 def buyStock(user_id, command):
-    CURRENT_VALUE = 0
     TICKER = 0
     AMOUNT = 1
     try:
@@ -22,7 +21,7 @@ def buyStock(user_id, command):
             return f"{command} Task Terminated: Can't purchase negative or zero shares"
         
         ticker = command[TICKER].upper()
-        share_price = getValue([ticker])[CURRENT_VALUE]
+        share_price = getValue([ticker])
 
         if share_price == None:
             return f"{command} Task Terminated: Ticker wasn't found"
@@ -57,7 +56,6 @@ def buyStock(user_id, command):
         return f"{command} Task Terminated: Bad parameters passed."
     
 def delBuyStock(user_id, command):
-    CURRENT_VALUE = 0
     TICKER = 0
     AMOUNT = 1
     TP_LOW = 2
@@ -75,7 +73,7 @@ def delBuyStock(user_id, command):
             return f"{command} Task Terminated: Flip flopped target prices"
 
         ticker = command[TICKER].upper()
-        cur_value = getValue([ticker])[CURRENT_VALUE]
+        cur_value = getValue([ticker])
 
         if cur_value == None:
             return f"{command} Task Terminated: Ticker wasn't found"
@@ -95,7 +93,7 @@ def delBuyStock(user_id, command):
             if max_transac_cost > balance:
                 return f"{command} Task Terminated: Account balance too low. Balance: {balance:.2f}"
             
-            cur_value = getValue([ticker])[CURRENT_VALUE]
+            cur_value = getValue([ticker])
 
             if cur_value == None:
                 return f"{command} Task Terminated: Ran into unexpected error"

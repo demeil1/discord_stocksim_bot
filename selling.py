@@ -10,7 +10,6 @@ from databases.stocks_table import updateUserStockAmount, querySpecificUserStock
 from databases.users_table import queryUserBalance, updateUserBalance
 
 def sellStock(user_id, command):
-    CURRENT_VALUE = 0
     TICKER = 0
     AMOUNT = 1
     try:
@@ -20,7 +19,7 @@ def sellStock(user_id, command):
             return f"{command} Task Terminated: Can't sell negative or zero shares"
 
         ticker = command[TICKER].upper()
-        curr_price = getValue([ticker])[CURRENT_VALUE]
+        curr_price = getValue([ticker])
         if curr_price == None:
             return f"{command} Task Terminated: Ticker wasn't found"
 
@@ -69,7 +68,6 @@ def sellStock(user_id, command):
         return f"{command} Task Terminated: Bad paramaters passed."
         
 def delSellStock(user_id, command):
-    CURRENT_VALUE = 0
     TICKER = 0
     AMOUNT = 1
     TP_LOW = 2
@@ -87,7 +85,7 @@ def delSellStock(user_id, command):
             return f"{command} Task Terminated: Flip flopped target prices"
 
         ticker = command[TICKER].upper()       
-        curr_price = getValue([ticker])[CURRENT_VALUE]
+        curr_price = getValue([ticker])
         if curr_price == None:
             return f"{command} Task Terminated: Ticker wasn't ticker"
 
@@ -100,7 +98,7 @@ def delSellStock(user_id, command):
             if not marketHours():
                 return f"{command} Task Terminated: Ran into after hours"
 
-            curr_price = getValue([ticker])[CURRENT_VALUE]
+            curr_price = getValue([ticker])
             if curr_price == None:
                 return f"{command} Task Terminated: Ran into unexpected error"
 
