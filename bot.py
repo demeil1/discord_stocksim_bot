@@ -19,7 +19,7 @@ async def on_ready():
 
 @tasks.loop(seconds = 3.0)
 async def checkStaleShorts():
-    await checkShortPositions()
+    checkShortPositions()
 
 @CLIENT.tree.command(description="buy [ticker: text] [# of shares: integer]")
 @app_commands.describe(ticker="ticker",
@@ -30,7 +30,7 @@ async def buy(interaction: discord.Interaction,
 
     parsed_message = [ticker.upper(), num_shares]
     user_id = userIdToString(interaction.user.id)
-    result = await buyStock(user_id, parsed_message)
+    result = buyStock(user_id, parsed_message)
     await interaction.response.send_message(result)
 
 #fix commands below and set them up in the correct guild
@@ -48,7 +48,7 @@ async def delbuy(interaction: discord.Interaction,
 
     parsed_message = [ticker.upper(), num_shares, tp_low, tp_high]
     user_id = userIdToString(interaction.user.id)
-    result = await delBuyStock(user_id, parsed_message)
+    result = delBuyStock(user_id, parsed_message)
     await interaction.response.send_message(result)
 
 @CLIENT.tree.command(description = "sell [ticker: text] [# of shares: integer]")
@@ -60,7 +60,7 @@ async def sell(interaction: discord.Interaction,
 
     parsed_message = [ticker.upper(), num_shares]
     user_id = userIdToString(interaction.user.id)
-    result = await sellStock(user_id, parsed_message)
+    result = sellStock(user_id, parsed_message)
     await interaction.response.send_message(result)
 
 @CLIENT.tree.command(description = "target price sell [ticker: text] [# of shares: integer] [low: decimal] [high: decimal]")
@@ -76,7 +76,7 @@ async def delsell(interaction: discord.Interaction,
 
     parsed_message = [ticker.upper(), num_shares, tp_low, tp_high]
     user_id = userIdToString(interaction.user.id)
-    result = await delSellStock(user_id, parsed_message)
+    result = delSellStock(user_id, parsed_message)
     await interaction.response.send_message(result)
 
 @CLIENT.tree.command(description = "short [ticker: text] [# of shares]")
@@ -91,7 +91,7 @@ async def short(interaction: discord.Interaction,
     # await interaction.response.defer()
     parsed_message = [ticker.upper(), num_shares, stop_loss]
     user_id = userIdToString(interaction.user.id)
-    result = await shortStock(user_id, parsed_message)
+    result = shortStock(user_id, parsed_message)
     await interaction.response.send_message(result)
     # await interaction.followup.send(result)
 
@@ -102,7 +102,7 @@ async def cover(interaction: discord.Interaction,
 
     parsed_message = [transac_id]
     user_id = userIdToString(interaction.user.id)
-    result = await coverShort(user_id, parsed_message)
+    result = coverShort(user_id, parsed_message)
     await interaction.response.send_message(result)
 
 @CLIENT.tree.command(description = "returns transactions of all purchases or purchases of specified tickers")
@@ -163,5 +163,5 @@ async def balance(interaction: discord.Interaction):
 async def networth(interaction: discord.Interaction):
 
     user_id = userIdToString(interaction.user.id)
-    networth = await calculateUserNetWorth(user_id)
+    networth = calculateUserNetWorth(user_id)
     await interaction.response.send_message(f"{interaction.user}'s networth: ${networth:.2f}")

@@ -9,7 +9,7 @@ from databases.timing import marketHours
 from databases.stocks_table import updateUserStockAmount, querySpecificUserStock, removeFromUserStock
 from databases.users_table import queryUserBalance, updateUserBalance
 
-async def sellStock(user_id, command):
+def sellStock(user_id, command):
     CURRENT_VALUE = 0
     TICKER = 0
     AMOUNT = 1
@@ -20,7 +20,7 @@ async def sellStock(user_id, command):
             return f"{command} Task Terminated: Can't sell negative or zero shares"
 
         ticker = command[TICKER].upper()
-        curr_price = (await getValue([ticker]))[CURRENT_VALUE]
+        curr_price = getValue([ticker])[CURRENT_VALUE]
         if curr_price == None:
             return f"{command} Task Terminated: Ticker wasn't found"
 
@@ -68,7 +68,7 @@ async def sellStock(user_id, command):
 
         return f"{command} Task Terminated: Bad paramaters passed."
         
-async def delSellStock(user_id, command):
+def delSellStock(user_id, command):
     CURRENT_VALUE = 0
     TICKER = 0
     AMOUNT = 1
@@ -87,7 +87,7 @@ async def delSellStock(user_id, command):
             return f"{command} Task Terminated: Flip flopped target prices"
 
         ticker = command[TICKER].upper()       
-        curr_price = (await getValue([ticker]))[CURRENT_VALUE]
+        curr_price = getValue([ticker])[CURRENT_VALUE]
         if curr_price == None:
             return f"{command} Task Terminated: Ticker wasn't ticker"
 
@@ -100,7 +100,7 @@ async def delSellStock(user_id, command):
             if not marketHours():
                 return f"{command} Task Terminated: Ran into after hours"
 
-            curr_price = (await getValue([ticker]))[CURRENT_VALUE]
+            curr_price = getValue([ticker])[CURRENT_VALUE]
             if curr_price == None:
                 return f"{command} Task Terminated: Ran into unexpected error"
 

@@ -11,7 +11,7 @@ from databases.stocks_table import appendToStockTable
 from databases.users_table import queryUserBalance, updateUserBalance
 
 
-async def buyStock(user_id, command):
+def buyStock(user_id, command):
     CURRENT_VALUE = 0
     TICKER = 0
     AMOUNT = 1
@@ -22,7 +22,7 @@ async def buyStock(user_id, command):
             return f"{command} Task Terminated: Can't purchase negative or zero shares"
         
         ticker = command[TICKER].upper()
-        share_price = (await getValue([ticker]))[CURRENT_VALUE]
+        share_price = getValue([ticker])[CURRENT_VALUE]
 
         if share_price == None:
             return f"{command} Task Terminated: Ticker wasn't found"
@@ -56,7 +56,7 @@ async def buyStock(user_id, command):
     except (IndexError, TypeError, ValueError):
         return f"{command} Task Terminated: Bad parameters passed."
     
-async def delBuyStock(user_id, command):
+def delBuyStock(user_id, command):
     CURRENT_VALUE = 0
     TICKER = 0
     AMOUNT = 1
@@ -75,7 +75,7 @@ async def delBuyStock(user_id, command):
             return f"{command} Task Terminated: Flip flopped target prices"
 
         ticker = command[TICKER].upper()
-        cur_value = (await getValue([ticker]))[CURRENT_VALUE]
+        cur_value = getValue([ticker])[CURRENT_VALUE]
 
         if cur_value == None:
             return f"{command} Task Terminated: Ticker wasn't found"
@@ -95,7 +95,7 @@ async def delBuyStock(user_id, command):
             if max_transac_cost > balance:
                 return f"{command} Task Terminated: Account balance too low. Balance: {balance:.2f}"
             
-            cur_value = (await getValue([ticker]))[CURRENT_VALUE]
+            cur_value = getValue([ticker])[CURRENT_VALUE]
 
             if cur_value == None:
                 return f"{command} Task Terminated: Ran into unexpected error"

@@ -5,7 +5,7 @@ from databases.shorts_table import appendToShortTable, querySpecificUserShorts, 
 from databases.users_table import queryUserBalance, updateUserBalance
 from networth import calculateUserNetWorth
 
-async def shortStock(user_id, command):
+def shortStock(user_id, command):
     CURRENT_VALUE = 0
     TICKER = 0
     NUM_SHARES = 1
@@ -17,7 +17,7 @@ async def shortStock(user_id, command):
             return f"{command} Task Terminated: Can't purchase negative or zero shares"
 
         ticker = command[TICKER].upper()
-        share_price = (await getValue([ticker]))[CURRENT_VALUE]
+        share_price = getValue([ticker])[CURRENT_VALUE]
         if share_price == None:
             return f"{command} Task Terminated: Ticker wasn't found"
         
@@ -25,7 +25,7 @@ async def shortStock(user_id, command):
         if stop_loss <= share_price:
             return f"{command} Task Terminated: Stop loss ({stop_loss:.2f}) < or = current {ticker} share price ({share_price:.2f})"
 
-        networth = await calculateUserNetWorth(user_id)
+        networth = calculateUserNetWorth(user_id)
         potential_loss = (stop_loss - share_price) * num_shares
         if potential_loss > networth:
             return f"{command} Task Terminated: Potential loss > current networth. Potential loss: {potential_loss:.2f}. Networth: {networth:.2f}"
@@ -49,7 +49,7 @@ async def shortStock(user_id, command):
     except (IndexError, TypeError, ValueError):
         return f"{command} Task Terminated: Bad parameters passed."
 
-async def coverShort(user_id, command):
+def coverShort(user_id, command):
     CURRENT_VALUE = 0
     TRANSAC_ID = 0
     TICKER = 2
@@ -68,7 +68,7 @@ async def coverShort(user_id, command):
         initial_price = transaction[INITIAL_PRICE]
         ticker = transaction[TICKER]
 
-        cur_price = (await getValue([ticker]))[CURRENT_VALUE]
+        cur_price = getValue([ticker])[CURRENT_VALUE]
 
         profit = (initial_price - cur_price) * num_shares
         new_balance = balance + profit
@@ -79,7 +79,7 @@ async def coverShort(user_id, command):
     except (IndexError, TypeError, ValueError):
         return f"{command} Task Terminated: Bad parameters passed."
 
-async def checkShortPositions():
+def checkShortPositions():
     results = queryDistinctShorts() 
 
     distinct_tickers = [ticker[0] for ticker in results]
@@ -87,7 +87,7 @@ async def checkShortPositions():
         return
 
     ticker_val_dict = {}
-    ticker_vals = await getValue(distinct_tickers)
+    ticker_vals = getValue(distinct_tickers)
     for ticker in range(len(distinct_tickers)):
         ticker_val_dict[distinct_tickers[ticker]] = ticker_vals[ticker]
 
@@ -99,4 +99,4 @@ async def checkShortPositions():
     transac_list = [transac[0] for transac in transac_list]
     for transac in transac_list:
         if transac[STOP_LOSS] <= ticker_val_dict[transac[TICKER]]:
-            await coverShort(transac[USER_ID], [transac[TRANSAC_ID]])
+            coverShort(transac[USER_ID], [transac[TRANSAC_ID]])

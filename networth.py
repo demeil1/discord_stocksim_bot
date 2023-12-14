@@ -3,7 +3,7 @@ from databases.yf_scraper import getValue
 from databases.stocks_table import queryDistinctUserStock, queryUserStockAmount
 from databases.shorts_table import queryUserShorts
 
-async def calculateUserNetWorth(user_id):
+def calculateUserNetWorth(user_id):
 
     networth = queryUserBalance(user_id)
 
@@ -15,7 +15,7 @@ async def calculateUserNetWorth(user_id):
         stock_shares = []
         for stock in user_stocks:
             stock_shares.append(queryUserStockAmount(user_id, stock))
-        share_values = await getValue(user_stocks)
+        share_values = getValue(user_stocks)
 
         stock_share_value_zip = zip(user_stocks, stock_shares, share_values)
         for tkr, ns, val in stock_share_value_zip:
@@ -28,7 +28,7 @@ async def calculateUserNetWorth(user_id):
         INITIAL_PRICE = 4
             
         tickers = [transac[TICKER] for transac in user_shorts]
-        share_values = await getValue(tickers)
+        share_values = getValue(tickers)
         for short in range(len(user_shorts)):
             networth += ((user_shorts[short][INITIAL_PRICE] - share_values[short]) * user_shorts[short][NUM_SHARES])
 
