@@ -1,8 +1,6 @@
 ### discord_stocksim_bot
 
 A stock simulator bot for discord!
-Created by Demeil Khoshaba and Andy Mai
-==================================================
 
 # Functionality
 
@@ -10,13 +8,11 @@ Created by Demeil Khoshaba and Andy Mai
 * target price buying 
 * selling
 * target price selling
+* shorting
 
 # TODOs
 
-* shorting
 * options
-
-# Bot Slash Commands
 
 # /balance
 * description: returns your balance
@@ -32,8 +28,6 @@ Created by Demeil Khoshaba and Andy Mai
     - "/query *" returns the transaction history of all tickers owned
     - "/query AAPL" returns the transaction history of your AAPL share purchases only
         
-# Beginner
-
 # /buy
 * description: purchases an amount of shares 
 * paramaters: 
@@ -75,8 +69,6 @@ Created by Demeil Khoshaba and Andy Mai
         - Solution: ensure that the stock is bough before selling (can use /query command)
     - "Bad parameters passed":
         - Troubleshooting: check that you have the correct amount and type of parameters
-
-# Intermediate
 
 # /delbuy 
 * description: purchases an amount of shares within a cost range
@@ -141,8 +133,6 @@ Created by Demeil Khoshaba and Andy Mai
         - Solution: use the /balance command to get your current balance
     - "Bad parameters passed":
         - Troubleshooting: check that you have the correct amount and type of parameters
-
-# Advanced
 
 # /short
 * description: short an amount of shares of a ticker
