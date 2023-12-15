@@ -49,7 +49,7 @@ async def delbuy(interaction: discord.Interaction,
     parsed_message = [ticker.upper(), num_shares, tp_low, tp_high]
     user_id = userIdToString(interaction.user.id)
     result = delBuyStock(user_id, parsed_message)
-    await interaction.response.send_message(result)
+    await interaction.response.send_message(f"{interaction.user.mention} " + result)
 
 @CLIENT.tree.command(description = "sell [ticker: text] [# of shares: integer]")
 @app_commands.describe(ticker = "ticker:", 
@@ -77,7 +77,7 @@ async def delsell(interaction: discord.Interaction,
     parsed_message = [ticker.upper(), num_shares, tp_low, tp_high]
     user_id = userIdToString(interaction.user.id)
     result = delSellStock(user_id, parsed_message)
-    await interaction.response.send_message(result)
+    await interaction.response.send_message(f"{interaction.user.mention} " + result)
 
 @CLIENT.tree.command(description = "short [ticker: text] [# of shares]")
 @app_commands.describe(ticker = "ticker:",

@@ -43,5 +43,5 @@ def updateUserBalance(user_id, balance):
 def removeFromUserDatabase(user_id):
 
     remove_statement = "DELETE FROM USERS WHERE USER_ID = ?"
-    CURSOR.execute(remove_statement, (user_id))
+    CURSOR.execute(remove_statement, (user_id,))
     CONNECTION.commit()
