@@ -154,7 +154,7 @@ cython_debug/
 
 # discord_stocksim_bot ignores
 STOCKSIM.db
-bot_config.py
+src.bot_config.py
 .DS_Store
 
 # PyCharm

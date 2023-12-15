@@ -1,10 +1,10 @@
-from bot_config import *
-from bot import *
-from databases.timing import marketHours
-from databases.users_table import createUsersTable
-from databases.stocks_table import createStockTable
-from databases.shorts_table import createShortsTable
-from databases.database_globals import databaseCleanup
+from src.bot_config import *
+from src.bot import *
+from src.utils.timing import marketHours
+from src.tables.users_table import createUsersTable
+from src.tables.stocks_table import createStockTable
+from src.tables.shorts_table import createShortsTable
+from src.tables.database_globals import databaseCleanup
 
 def main():
 

@@ -1,12 +1,12 @@
-from bot_config import *
-from buying import buyStock, delBuyStock
-from selling import sellStock, delSellStock
-from shorting import shortStock, coverShort, checkShortPositions
-from databases.ids import userIdToString
-from databases.stocks_table import queryUserStock, querySpecificUserStock
-from databases.users_table import queryUserBalance
-from databases.shorts_table import queryUserShorts, querySpecificUserShorts
-from networth import calculateUserNetWorth
+from .bot_config import *
+from .buying import buyStock, delBuyStock
+from .selling import sellStock, delSellStock
+from .shorting import shortStock, coverShort, checkShortPositions
+from .utils.ids import userIdToString
+from .tables.stocks_table import queryUserStock, querySpecificUserStock
+from .tables.users_table import queryUserBalance
+from .tables.shorts_table import queryUserShorts, querySpecificUserShorts
+from .networth import calculateUserNetWorth
 # from commands import buying, selling, options, shorting, pichart, leaderboard
 
 @CLIENT.event

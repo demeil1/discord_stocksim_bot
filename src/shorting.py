@@ -1,9 +1,9 @@
-from databases.yf_scraper import getValue
-from databases.ids import getTransacId 
-from databases.timing import getTransacTime, getTransacDate
-from databases.shorts_table import appendToShortTable, querySpecificUserShorts, removeFromUserShort, queryShortById, queryDistinctShorts, queryShortsByTicker
-from databases.users_table import queryUserBalance, updateUserBalance
-from networth import calculateUserNetWorth
+from .utils.yf_scraper import getValue
+from .utils.ids import getTransacId 
+from .utils.timing import getTransacTime, getTransacDate
+from .tables.shorts_table import appendToShortTable, querySpecificUserShorts, removeFromUserShort, queryShortById, queryDistinctShorts, queryShortsByTicker
+from .tables.users_table import queryUserBalance, updateUserBalance
+from .networth import calculateUserNetWorth
 
 def shortStock(user_id, command):
     TICKER = 0

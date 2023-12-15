@@ -4,10 +4,10 @@
 # for delayed selling we want to stop the function
 # at the end of the trading day 
 # and sent a message to inform the user
-from databases.yf_scraper import getValue
-from databases.timing import marketHours
-from databases.stocks_table import updateUserStockAmount, querySpecificUserStock, removeFromUserStock
-from databases.users_table import queryUserBalance, updateUserBalance
+from .utils.yf_scraper import getValue
+from .utils.timing import marketHours
+from .tables.stocks_table import updateUserStockAmount, querySpecificUserStock, removeFromUserStock
+from .tables.users_table import queryUserBalance, updateUserBalance
 
 def sellStock(user_id, command):
     TICKER = 0

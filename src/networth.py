@@ -1,7 +1,7 @@
-from databases.users_table import queryUserBalance
-from databases.yf_scraper import getValue
-from databases.stocks_table import queryDistinctUserStock, queryUserStockAmount
-from databases.shorts_table import queryUserShorts
+from .utils.yf_scraper import getValue
+from .tables.users_table import queryUserBalance
+from .tables.stocks_table import queryDistinctUserStock, queryUserStockAmount
+from .tables.shorts_table import queryUserShorts
 
 def calculateUserNetWorth(user_id):
 

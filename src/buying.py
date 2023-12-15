@@ -4,11 +4,11 @@
 # for delayed buying we want to stop the function
 # at the end of the trading day 
 # and sent a message to inform the user
-from databases.yf_scraper import getValue
-from databases.ids import getTransacId 
-from databases.timing import marketHours, getTransacTime, getTransacDate
-from databases.stocks_table import appendToStockTable
-from databases.users_table import queryUserBalance, updateUserBalance
+from .utils.yf_scraper import getValue
+from .utils.ids import getTransacId 
+from .utils.timing import marketHours, getTransacTime, getTransacDate
+from .tables.stocks_table import appendToStockTable
+from .tables.users_table import queryUserBalance, updateUserBalance
 
 
 def buyStock(user_id, command):
