@@ -38,7 +38,7 @@ git clone https://github.com/demeil1/discord_stocksim_bot/tree/main
 15. Find the "priviliged gateway intents" section and check each button (save changes)
 16. At the top of the page click on "reset token"
 17. Copy the token and store it with your url that was generated
-18. paste the url generated in the discord developer portal and paste it into your browser and invite it into a server
+18. Paste the url generated in the discord developer portal into your browser and invite it into a server
 
 # Configuring discord_stocksim_bot Files
 1. open the bot_config.py file in the discord_stocksim_bot/src directory
