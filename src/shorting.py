@@ -57,10 +57,9 @@ def coverShort(user_id, command):
         transac_id = command[TRANSAC_ID]
         balance = queryUserBalance(user_id)
         
-        result = queryShortById(user_id, transac_id)
-        if result == None:
+        transaction = queryShortById(user_id, transac_id)
+        if transaction == None:
             return f"{command} Task Terminated: Couldn't pinpoint transaction by ID"
-        transaction = result[0]
 
         num_shares = transaction[NUM_SHARES]
         initial_price = transaction[INITIAL_PRICE]
@@ -78,7 +77,10 @@ def coverShort(user_id, command):
         return f"{command} Task Terminated: Bad parameters passed."
 
 def checkShortPositions():
+
     results = queryDistinctShorts() 
+    if not results:
+        return
 
     distinct_tickers = [ticker[0] for ticker in results]
     if not distinct_tickers:

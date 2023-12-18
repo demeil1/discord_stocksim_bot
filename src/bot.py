@@ -2,7 +2,9 @@ from .bot_config import *
 from .buying import buyStock, delBuyStock
 from .selling import sellStock, delSellStock
 from .shorting import shortStock, coverShort, checkShortPositions
+from .options import callStock, putStock, checkOptionPositions
 from .utils.ids import userIdToString
+from .utils.yf_scraper import getValue, calculateOptionPremium
 from .tables.stocks_table import queryUserStock, querySpecificUserStock
 from .tables.users_table import queryUserBalance
 from .tables.shorts_table import queryUserShorts, querySpecificUserShorts
@@ -16,14 +18,19 @@ async def on_ready():
     print(f"\nSynced {len(sync)} command(s)")
     print(f"\nSuccessful: We have logged in as {CLIENT.user}")
     checkStaleShorts.start()
+    checkStaleOptions.start()
 
 @tasks.loop(seconds = 3.0)
 async def checkStaleShorts():
     checkShortPositions()
 
+@tasks.loop(seconds = 3.0)
+async def checkStaleOptions():
+    checkOptionPositions()
+
 @CLIENT.tree.command(description="buy [ticker: text] [# of shares: integer]")
-@app_commands.describe(ticker="ticker",
-                       num_shares="# of shares")
+@app_commands.describe(ticker="ticker:",
+                       num_shares="# of shares:")
 async def buy(interaction: discord.Interaction, 
               ticker: str, 
               num_shares: int):
@@ -79,7 +86,7 @@ async def delsell(interaction: discord.Interaction,
     result = delSellStock(user_id, parsed_message)
     await interaction.response.send_message(f"{interaction.user.mention} " + result)
 
-@CLIENT.tree.command(description = "short [ticker: text] [# of shares]")
+@CLIENT.tree.command(description = "short [ticker: text] [# of shares: integer]")
 @app_commands.describe(ticker = "ticker:",
                        num_shares = "# of shares:",
                        stop_loss = "stop loss:")
@@ -105,6 +112,48 @@ async def cover(interaction: discord.Interaction,
     result = coverShort(user_id, parsed_message)
     await interaction.response.send_message(result)
 
+@CLIENT.tree.command(description = "view option premium before purchasing")
+@app_commands.describe(ticker = "ticker:",
+                       expiration_days = "days until contract expires")
+async def premium(interaction: discord.Interaction,
+                  ticker: str,
+                  expiration_days: int):
+    interest_rate = 0.02
+    strike_price = getValue([ticker.upper()])
+    result = calculateOptionPremium(ticker.upper(), strike_price, expiration_days, interest_rate)
+    if result:
+        await interaction.response.send_message(f"{ticker.upper()}'s Premium: ${result:.2f}")
+        return
+    await interaction.response.send_message(f"Task Terminated: Error finding {ticker.upper()}'s premium")
+    
+@CLIENT.tree.command(description = "call [ticker: text] [# of shares: integer] [expiration days: integer]")
+@app_commands.describe(ticker = "ticker:",
+                       num_shares = "# of shares:",
+                       expiration_days = "expiration days")
+async def call(interaction: discord.Interaction,
+               ticker: str,
+               num_shares: int,
+               expiration_days: int):
+    
+    parsed_message = [ticker.upper(), num_shares, expiration_days]
+    user_id = userIdToString(interaction.user.id)
+    result = callStock(user_id, parsed_message)
+    await interaction.response.send_message(result)
+
+@CLIENT.tree.command(description = "put [ticker: text] [# of shares: integer] [expiration days: integer]")
+@app_commands.describe(ticker = "ticker:",
+                       num_shares = "# of shares:",
+                       expiration_days = "expiration days")
+async def put(interaction: discord.Interaction,
+               ticker: str,
+               num_shares: int,
+               expiration_days: int):
+    
+    parsed_message = [ticker.upper(), num_shares, expiration_days]
+    user_id = userIdToString(interaction.user.id)
+    result = putStock(user_id, parsed_message)
+    await interaction.response.send_message(result)
+    
 @CLIENT.tree.command(description = "returns transactions of all purchases or purchases of specified tickers")
 @app_commands.describe(tickers = "enter '*' for all transactions or ticker(s) seperated by spaces for specific ones")      
 async def query(interaction: discord.Interaction,

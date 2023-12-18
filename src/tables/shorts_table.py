@@ -81,7 +81,7 @@ def queryShortById(user_id, transac_id):
     result = CURSOR.fetchall()
     if result == []:
         return None
-    return result
+    return result[0]
 
 def queryDistinctShorts():
 
