@@ -2,7 +2,7 @@ from .bot_config import *
 from .buying import buyStock, delBuyStock
 from .selling import sellStock, delSellStock
 from .shorting import shortStock, coverShort, checkShortPositions
-from .options import callStock, putStock, checkOptionPositions
+from .options import optionStock, checkOptionPositions
 from .utils.ids import userIdToString
 from .utils.yf_scraper import getValue, calculateOptionPremium
 from .tables.stocks_table import queryUserStock, querySpecificUserStock
@@ -135,7 +135,8 @@ async def call(interaction: discord.Interaction,
                num_shares: int,
                expiration_days: int):
     
-    parsed_message = [ticker.upper(), num_shares, expiration_days]
+    interest_rate = 0.02
+    parsed_message = [ticker.upper(), num_shares, expiration_days, interest_rate, "call"]
     user_id = userIdToString(interaction.user.id)
     result = callStock(user_id, parsed_message)
     await interaction.response.send_message(result)
@@ -149,7 +150,8 @@ async def put(interaction: discord.Interaction,
                num_shares: int,
                expiration_days: int):
     
-    parsed_message = [ticker.upper(), num_shares, expiration_days]
+    interest_rate = 0.02
+    parsed_message = [ticker.upper(), num_shares, expiration_days, interest_rate, "put"]
     user_id = userIdToString(interaction.user.id)
     result = putStock(user_id, parsed_message)
     await interaction.response.send_message(result)

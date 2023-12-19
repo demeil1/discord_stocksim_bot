@@ -4,10 +4,12 @@ from .utils.timing import getTransacTime, getTransacDate, getTimeSinceEpoch
 from .tables.options_table import appendToOptionTable, queryOptions, queryOptionById, removeFromUserOption
 from .tables.users_table import queryUserBalance, updateUserBalance
 
-def callStock(user_id, command):
+def optionStock(user_id, command):
     TICKER = 0
     NUM_SHARES = 1
     EXPIRATION_DAYS = 2
+    INTEREST_RATE = 3
+    TRANSAC_TYPE = 4
     try:
         num_shares = command[NUM_SHARES]
         if num_shares <= 0:
@@ -22,7 +24,7 @@ def callStock(user_id, command):
         if not strike_price:
             return f"{command} Task Terminated: Ticker wasn't found"
         
-        interest_rate = 0.02
+        interest_rate = command[INTEREST_RATE]
         premium = calculateOptionPremium(ticker, strike_price, expiration_days, interest_rate)
         if not premium:
             return f"{command} Task Terminated: Couldn't get premium"
@@ -35,57 +37,7 @@ def callStock(user_id, command):
         transac_time = getTransacTime()
         transac_date = getTransacDate()
         transac_id   = getTransacId()
-        transac_type = "call"
-
-        appendToOptionTable(user_id,
-                            transac_id,
-                            ticker,
-                            num_shares,
-                            strike_price,
-                            premium,
-                            expiration_days,
-                            transac_type,
-                            transac_date,
-                            transac_time,
-                            transac_time_since_epoch)
-
-        return f"{command} Task Completed: Ran without error. Premium: {premium:.2f} will be deducted after exercising option"
-    
-    except (IndexError, TypeError, ValueError):
-        return f"{command} Task Terminated: Bad parameters passed."
-
-def putStock(user_id, command):
-    TICKER = 0
-    NUM_SHARES = 1
-    EXPIRATION_DAYS = 2
-    try:
-        num_shares = command[NUM_SHARES]
-        if num_shares <= 0:
-            return f"{command} Task Terminated: Can't purchase negative or zero shares"
-
-        expiration_days = command[EXPIRATION_DAYS]
-        if expiration_days <= 0:
-            return f"{command} Task Terminated: Days until contract expires can't be < or = 0"
-
-        ticker = command[TICKER].upper()
-        strike_price = getValue([ticker])
-        if not strike_price:
-            return f"{command} Task Terminated: Ticker wasn't found"
-
-        interest_rate = 0.02
-        premium = calculateOptionPremium(ticker, strike_price, expiration_days, interest_rate)
-        if not premium:
-            return f"{command} Task Terminated: Couldn't get premium"
-
-        balance = queryUserBalance(user_id)
-        if premium > balance:
-            return f"{command} Task Terminated: Account balance too low. Balance: {balance:.2f}"
-
-        transac_time_since_epoch = getTimeSinceEpoch()
-        transac_time = getTransacTime()
-        transac_date = getTransacDate()
-        transac_id   = getTransacId()
-        transac_type = "put"
+        transac_type = command[TRANSAC_TYPE]
 
         appendToOptionTable(user_id,
                             transac_id,
