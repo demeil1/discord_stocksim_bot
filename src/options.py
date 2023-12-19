@@ -74,7 +74,7 @@ def exerciseOption(user_id, command):
         premium = transac[PREMIUM]
         current_price = getValue([ticker])
         strike_price = transac[STRIKE_PRICE]
-        balance = queryUserBalance()
+        balance = queryUserBalance(user_id)
 
         transac_type = transac[TYPE]
         if transac_type.lower() == "call":

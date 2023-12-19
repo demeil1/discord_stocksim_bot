@@ -2,7 +2,7 @@ from .bot_config import *
 from .buying import buyStock, delBuyStock
 from .selling import sellStock, delSellStock
 from .shorting import shortStock, coverShort, checkShortPositions
-from .options import optionStock, checkOptionPositions
+from .options import optionStock, exerciseOption, checkOptionPositions
 from .utils.ids import userIdToString
 from .utils.yf_scraper import getValue, calculateOptionPremium
 from .tables.stocks_table import queryUserStock, querySpecificUserStock
@@ -156,7 +156,17 @@ async def put(interaction: discord.Interaction,
     user_id = userIdToString(interaction.user.id)
     result = optionStock(user_id, parsed_message)
     await interaction.response.send_message(result)
+
+@CLIENT.tree.command(description = "exercise option [transaction: id]")
+@app_commands.describe(id = "id:")
+async def exercise(interaction: discord.Interaction,
+               id: str):
     
+    parsed_message = [id]
+    user_id = userIdToString(interaction.user.id)
+    result = exerciseOption(user_id, parsed_message)
+    await interaction.response.send_message(result)
+
 @CLIENT.tree.command(description = "returns transactions of all purchases or purchases of specified tickers")
 @app_commands.describe(tickers = "enter '*' for all transactions or ticker(s) seperated by spaces for specific ones")      
 async def query(interaction: discord.Interaction,
