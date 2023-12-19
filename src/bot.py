@@ -139,7 +139,7 @@ async def call(interaction: discord.Interaction,
     interest_rate = 0.02
     parsed_message = [ticker.upper(), num_shares, expiration_days, interest_rate, "call"]
     user_id = userIdToString(interaction.user.id)
-    result = callStock(user_id, parsed_message)
+    result = optionStock(user_id, parsed_message)
     await interaction.response.send_message(result)
 
 @CLIENT.tree.command(description = "put [ticker: text] [# of shares: integer] [expiration days: integer]")
@@ -154,7 +154,7 @@ async def put(interaction: discord.Interaction,
     interest_rate = 0.02
     parsed_message = [ticker.upper(), num_shares, expiration_days, interest_rate, "put"]
     user_id = userIdToString(interaction.user.id)
-    result = putStock(user_id, parsed_message)
+    result = optionStock(user_id, parsed_message)
     await interaction.response.send_message(result)
     
 @CLIENT.tree.command(description = "returns transactions of all purchases or purchases of specified tickers")
@@ -215,7 +215,7 @@ async def query(interaction: discord.Interaction,
             if not options_result:
                 options_str += f"\nNo {ticker.upper()} option contracts\n"
             else:
-                for t in options_str:
+                for t in options_result:
                     options_str += f"('{t[1]}', '{t[2]}', {t[3]}, {t[4]:.2f}, {t[5]:.2f}, '{t[6]}', '{t[7]}', '{t[8]}')\n"
 
         transacs = stocks_str + "\n" + shorts_str + "\n" + options_str

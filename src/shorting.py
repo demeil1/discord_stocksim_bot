@@ -88,6 +88,8 @@ def checkShortPositions():
 
     ticker_val_dict = {}
     ticker_vals = getValue(distinct_tickers)
+    if not (ticker_vals is list):
+        ticker_vals = [ticker_vals]
     for ticker in range(len(distinct_tickers)):
         ticker_val_dict[distinct_tickers[ticker]] = ticker_vals[ticker]
 

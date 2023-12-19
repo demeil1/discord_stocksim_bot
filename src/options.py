@@ -93,6 +93,7 @@ def checkOptionPositions():
 
     USER_ID = 0
     TRANSAC_ID = 1
+    PREMIUM = 5
     EXPIRATION_DAYS = 6
     TIME_SINCE_EPOCH = 10
 
@@ -105,6 +106,10 @@ def checkOptionPositions():
         time_since_epoch = transac[TIME_SINCE_EPOCH]
 
         # 86400 = seconds in a day if expiration_time > current_time
-        if ((days * 86400) + time_since_epoch) > getTimeSinceEpoch():
-            removeFromUserOption(transac[USER_ID], transac[TRANSAC_ID])
+        if ((days * 86400) + time_since_epoch) < getTimeSinceEpoch():
+            user_id = transac[USER_ID]
+            transac_id = transac[TRANSAC_ID]
+            premium = transac[PREMIUM]
+            removeFromUserOption(user_id, transac_id)
+            updateUserBalance(user_id, queryUserBalance(user_id) - premium)
 
