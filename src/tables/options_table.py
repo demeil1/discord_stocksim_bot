@@ -73,6 +73,16 @@ def queryOptions():
         return None
     return results
 
+def queryUserOptions(user_id):
+
+    query_statement = "SELECT * FROM OPTIONS WHERE USER_ID = ?"
+    CURSOR.execute(query_statement, (user_id,))
+
+    results = CURSOR.fetchall()
+    if results == []:
+        return None
+    return results
+
 def queryOptionById(user_id, transac_id):
 
     query_statement = "SELECT * FROM OPTIONS WHERE USER_ID = ? AND TRANSAC_ID = ?"
@@ -83,8 +93,19 @@ def queryOptionById(user_id, transac_id):
         return None
     return result[0]
 
+def querySpecificUserOptions(user_id, ticker):
+
+    query_statement = "SELECT * FROM OPTIONS WHERE USER_ID = ? AND TICKER = ?"
+    CURSOR.execute(query_statement, (user_id, ticker,))
+
+    results = CURSOR.fetchall()
+    if results == []:
+        return None
+    return results
+
 def removeFromUserOption(user_id, transac_id):
 
     remove_statement = "DELETE FROM OPTIONS WHERE USER_ID = ? AND TRANSAC_ID = ?"
     CURSOR.execute(remove_statement, (user_id, transac_id,))
     CONNECTION.commit()
+

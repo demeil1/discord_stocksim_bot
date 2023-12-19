@@ -8,6 +8,7 @@ from .utils.yf_scraper import getValue, calculateOptionPremium
 from .tables.stocks_table import queryUserStock, querySpecificUserStock
 from .tables.users_table import queryUserBalance
 from .tables.shorts_table import queryUserShorts, querySpecificUserShorts
+from .tables.options_table import queryUserOptions, querySpecificUserOptions
 from .networth import calculateUserNetWorth
 # from commands import buying, selling, options, shorting, pichart, leaderboard
 
@@ -166,6 +167,7 @@ async def query(interaction: discord.Interaction,
     if tickers == "*":
         stocks_result = queryUserStock(user_id)
         shorts_result = queryUserShorts(user_id)
+        options_result = queryUserOptions(user_id)
         
         transacs += "----- Stocks Owned -----\n\n"
         if stocks_result == None:
@@ -180,27 +182,43 @@ async def query(interaction: discord.Interaction,
         else:
             for t in shorts_result:
                 transacs += f"('{t[1]}', {t[2]}', {t[3]}, {t[4]:.2f}, {t[5]:.2f}, '{t[6]}', '{t[7]}', '{t[8]}')\n"
+
+        transacs += "\n----- Option Contracts -----\n\n"
+        if options_result == None:
+            transacs += "It's empty in here... Nothing in options database\n"
+        else:
+            for t in options_result:
+                transacs += f"('{t[1]}', {t[2]}', {t[3]}, {t[4]:.2f}, {t[5]:.2f}, '{t[6]:.2f}', '{t[7]}', '{t[8]}', '{t[9]}')\n"
     else:
         stocks_str = "----- Stocks Owned -----\n\n"
         shorts_str = "----- Short Positions -----\n\n"
+        options_str = "----- Option Contracts -----\n\n"
 
         tickers = tickers.strip().split()
         for ticker in tickers:
             stocks_result = querySpecificUserStock(user_id, ticker.upper())
             shorts_result = querySpecificUserShorts(user_id, ticker.upper())
+            options_result = querySpecificUserOptions(user_id, ticker.upper())
 
-            if stocks_result == None:
+            if not stocks_result:
                 stocks_str += f"\nNo {ticker.upper()} shares owned\n"
             else:
                 for t in stocks_result:
                     stocks_str += f"('{t[2]}', {t[3]}, {t[4]:.2f}, '{t[5]}', '{t[6]}', '{t[7]}')\n"
 
-            if shorts_result == None:
+            if not shorts_result:
                 shorts_str += f"\nNo {ticker.upper()} short positions\n"
             else:
                 for t in shorts_result:
                     shorts_str += f"('{t[1]}', '{t[2]}', {t[3]}, {t[4]:.2f}, {t[5]:.2f}, '{t[6]}', '{t[7]}', '{t[8]}')\n"
-        transacs = stocks_str + "\n" + shorts_str
+
+            if not options_result:
+                options_str += f"\nNo {ticker.upper()} option contracts\n"
+            else:
+                for t in options_str:
+                    options_str += f"('{t[1]}', '{t[2]}', {t[3]}, {t[4]:.2f}, {t[5]:.2f}, '{t[6]}', '{t[7]}', '{t[8]}')\n"
+
+        transacs = stocks_str + "\n" + shorts_str + "\n" + options_str
     await interaction.response.send_message(transacs)
 
 @CLIENT.tree.command(description = "returns your current balance")

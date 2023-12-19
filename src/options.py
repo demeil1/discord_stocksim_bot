@@ -84,6 +84,7 @@ def exerciseOption(user_id, command):
         
         new_balance = balance + profit
         updateUserBalance(user_id, new_balance) 
+        return f"{command} Task Completed: Ran without error. Profit: {profit:.2f}. Balance: {new_balance:.2f}"
 
     except:
         return f"{command} Task Terminated: Bad parameters passed."
