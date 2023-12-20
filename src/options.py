@@ -3,6 +3,7 @@ from .utils.ids import getTransacId
 from .utils.timing import getTransacTime, getTransacDate, getTimeSinceEpoch
 from .tables.options_table import appendToOptionTable, queryOptions, queryOptionById, removeFromUserOption
 from .tables.users_table import queryUserBalance, updateUserBalance
+from .bot_config import findUser
 
 def optionStock(user_id, command):
     TICKER = 0
@@ -90,19 +91,21 @@ def exerciseOption(user_id, command):
     except:
         return f"{command} Task Terminated: Bad parameters passed."
 
-def checkOptionPositions():
-
-    USER_ID = 0
-    TRANSAC_ID = 1
-    PREMIUM = 5
-    EXPIRATION_DAYS = 6
-    TIME_SINCE_EPOCH = 10
+async def checkOptionPositions():
 
     transacs = queryOptions()
     if not transacs:
         return
 
+    USER_ID = 0
+    TRANSAC_ID = 1
+    EXPIRATION_DAYS = 6
+    TIME_SINCE_EPOCH = 10
+
     for transac in transacs:
+        if not queryOptionById(transac[USER_ID], transac[TRANSAC_ID]):
+            continue
+
         days = transac[EXPIRATION_DAYS]
         time_since_epoch = transac[TIME_SINCE_EPOCH]
 
@@ -110,7 +113,8 @@ def checkOptionPositions():
         if ((days * 86400) + time_since_epoch) < getTimeSinceEpoch():
             user_id = transac[USER_ID]
             transac_id = transac[TRANSAC_ID]
-            premium = transac[PREMIUM]
-            removeFromUserOption(user_id, transac_id)
-            updateUserBalance(user_id, queryUserBalance(user_id) - premium)
-
+            result = exerciseOption(user_id, [transac_id])
+            user = findUser(user_id)
+            if not user:
+                continue
+            await user.send(result)

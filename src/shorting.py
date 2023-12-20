@@ -4,6 +4,7 @@ from .utils.timing import getTransacTime, getTransacDate
 from .tables.shorts_table import appendToShortTable, removeFromUserShort, queryShortById, queryDistinctShorts, queryShortsByTicker
 from .tables.users_table import queryUserBalance, updateUserBalance
 from .networth import calculateUserNetWorth
+from .bot_config import findUser
 
 def shortStock(user_id, command):
     TICKER = 0
@@ -76,7 +77,7 @@ def coverShort(user_id, command):
     except (IndexError, TypeError, ValueError):
         return f"{command} Task Terminated: Bad parameters passed."
 
-def checkShortPositions():
+async def checkShortPositions():
 
     results = queryDistinctShorts() 
     if not results:
@@ -100,5 +101,11 @@ def checkShortPositions():
     transac_list = [queryShortsByTicker(ticker) for ticker in distinct_tickers]
     transac_list = [transac[0] for transac in transac_list]
     for transac in transac_list:
+        if not queryShortById(transac[USER_ID], transac[TRANSAC_ID]):
+            continue
         if transac[STOP_LOSS] <= ticker_val_dict[transac[TICKER]]:
-            coverShort(transac[USER_ID], [transac[TRANSAC_ID]])
+            result = coverShort(transac[USER_ID], [transac[TRANSAC_ID]])
+            user = findUser(transac[USER_ID])
+            if not user:
+                continue
+            await user.send(result)
