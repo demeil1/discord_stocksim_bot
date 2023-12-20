@@ -16,17 +16,17 @@ async def on_ready():
 
     sync = await CLIENT.tree.sync()
     print(f"\nSynced {len(sync)} command(s)")
-    print(f"\nSuccessful: We have logged in as {CLIENT.user}")
+    print(f"\nSuccessful: We have logged in as {CLIENT.user}\n")
     checkStaleShorts.start()
     checkStaleOptions.start()
 
 @tasks.loop(seconds = 3.0)
 async def checkStaleShorts():
-    checkShortPositions()
+    await checkShortPositions()
 
 @tasks.loop(seconds = 3.0)
 async def checkStaleOptions():
-    checkOptionPositions()
+    await checkOptionPositions()
 
 @CLIENT.tree.command(description="buy [ticker: text] [# of shares: integer]")
 @app_commands.describe(ticker="ticker:",
@@ -54,7 +54,7 @@ async def delbuy(interaction: discord.Interaction,
 
     parsed_message = [ticker.upper(), num_shares, tp_low, tp_high]
     result = delBuyStock(interaction.user.id, parsed_message)
-    await interaction.response.send_message(f"{interaction.user.mention} " + result)
+    await interaction.user.send(result)
 
 @CLIENT.tree.command(description = "sell [ticker: text] [# of shares: integer]")
 @app_commands.describe(ticker = "ticker:", 
@@ -80,7 +80,7 @@ async def delsell(interaction: discord.Interaction,
 
     parsed_message = [ticker.upper(), num_shares, tp_low, tp_high]
     result = delSellStock(interaction.user.id, parsed_message)
-    await interaction.response.send_message(f"{interaction.user.mention} " + result)
+    await interaction.user.send(result)
 
 @CLIENT.tree.command(description = "short [ticker: text] [# of shares: integer]")
 @app_commands.describe(ticker = "ticker:",
@@ -91,11 +91,9 @@ async def short(interaction: discord.Interaction,
                 num_shares: int,
                 stop_loss: float):
 
-    # await interaction.response.defer()
     parsed_message = [ticker.upper(), num_shares, stop_loss]
     result = shortStock(interaction.user.id, parsed_message)
     await interaction.response.send_message(result)
-    # await interaction.followup.send(result)
 
 @CLIENT.tree.command(description = "cover shorted [transaction: id]")
 @app_commands.describe(transac_id = "transaction id:")
@@ -127,7 +125,7 @@ async def premium(interaction: discord.Interaction,
 async def call(interaction: discord.Interaction,
                ticker: str,
                num_shares: int,
-               expiration_days: int):
+               expiration_days: int): 
     
     interest_rate = 0.02
     parsed_message = [ticker.upper(), num_shares, expiration_days, interest_rate, "call"]
@@ -181,14 +179,14 @@ async def query(interaction: discord.Interaction,
             transacs += "It's empty in here... Nothing in shorts database\n"
         else:
             for t in shorts_result:
-                transacs += f"('{t[1]}', {t[2]}', {t[3]}, {t[4]:.2f}, {t[5]:.2f}, '{t[6]}', '{t[7]}', '{t[8]}')\n"
+                transacs += f"('{t[1]}', '{t[2]}', {t[3]}, {t[4]:.2f}, {t[5]:.2f}, '{t[6]}', '{t[7]}', '{t[8]}')\n"
 
         transacs += "\n----- Option Contracts -----\n\n"
         if options_result == None:
             transacs += "It's empty in here... Nothing in options database\n"
         else:
             for t in options_result:
-                transacs += f"('{t[1]}', {t[2]}', {t[3]}, {t[4]:.2f}, {t[5]:.2f}, '{t[6]:.2f}', '{t[7]}', '{t[8]}', '{t[9]}')\n"
+                transacs += f"('{t[1]}', '{t[2]}', {t[3]}, {t[4]:.2f}, {t[5]:.2f}, {t[6]}, '{t[7]}', '{t[8]}', '{t[9]}')\n"
     else:
         stocks_str = "----- Stocks Owned -----\n\n"
         shorts_str = "----- Short Positions -----\n\n"
@@ -216,7 +214,7 @@ async def query(interaction: discord.Interaction,
                 options_str += f"\nNo {ticker.upper()} option contracts\n"
             else:
                 for t in options_result:
-                    options_str += f"('{t[1]}', '{t[2]}', {t[3]}, {t[4]:.2f}, {t[5]:.2f}, '{t[6]}', '{t[7]}', '{t[8]}')\n"
+                    options_str += f"('{t[1]}', '{t[2]}', {t[3]}, {t[4]:.2f}, {t[5]:.2f}, {t[6]}, '{t[7]}', '{t[8]}')\n"
 
         transacs = stocks_str + "\n" + shorts_str + "\n" + options_str
     await interaction.response.send_message(transacs)
