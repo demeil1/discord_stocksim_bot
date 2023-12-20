@@ -84,6 +84,7 @@ def exerciseOption(user_id, command):
         
         new_balance = balance + profit
         updateUserBalance(user_id, new_balance) 
+        removeFromUserOption(user_id, transac_id)
         return f"{command} Task Completed: Ran without error. Profit: {profit:.2f}. Balance: {new_balance:.2f}"
 
     except:
