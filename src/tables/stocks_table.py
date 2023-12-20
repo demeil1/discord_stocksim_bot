@@ -3,7 +3,7 @@ from .database_globals import *
 def createStockTable():
 
     create_table_statement = f'''CREATE TABLE IF NOT EXISTS STOCKS (
-        USER_ID TEXT,
+        USER_ID INTEGER,
         TRANSAC_ID TEXT,
         TICKER TEXT, 
         NUM_SHARES INTEGER, 

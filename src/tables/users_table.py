@@ -3,7 +3,7 @@ from .database_globals import *
 def createUsersTable():
     
     create_table_statement = '''CREATE TABLE IF NOT EXISTS USERS (
-        USER_ID TEXT PRIMARY KEY,
+        USER_ID INTEGER PRIMARY KEY,
         BALANCE INTEGER
     )'''
     CURSOR.execute(create_table_statement)

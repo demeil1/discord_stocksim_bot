@@ -1,7 +1,7 @@
 from .utils.yf_scraper import getValue
 from .utils.ids import getTransacId 
 from .utils.timing import getTransacTime, getTransacDate
-from .tables.shorts_table import appendToShortTable, querySpecificUserShorts, removeFromUserShort, queryShortById, queryDistinctShorts, queryShortsByTicker
+from .tables.shorts_table import appendToShortTable, removeFromUserShort, queryShortById, queryDistinctShorts, queryShortsByTicker
 from .tables.users_table import queryUserBalance, updateUserBalance
 from .networth import calculateUserNetWorth
 

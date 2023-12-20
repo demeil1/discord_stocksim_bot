@@ -1,14 +1,5 @@
 import random
 
-def userIdToString(user_id):
-
-    string = ""
-    user_id = str(user_id)
-    chars = "abcdefghijklmnopqrstuvwxyz"
-    for num in user_id:
-        string += chars[int(num)]
-    return string
-
 def getTransacId():
 
     random.seed()

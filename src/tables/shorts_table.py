@@ -6,7 +6,7 @@ from .database_globals import *
 def createShortsTable():
 
     create_table_statement = '''CREATE TABLE IF NOT EXISTS SHORTS (
-        USER_ID TEXT,
+        USER_ID INTEGER,
         TRANSAC_ID TEXT,
         TICKER TEXT,
         NUM_SHARES INTEGER,
