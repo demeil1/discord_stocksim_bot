@@ -53,6 +53,7 @@ async def delbuy(interaction: discord.Interaction,
                  tp_high: float):
 
     parsed_message = [ticker.upper(), num_shares, tp_low, tp_high]
+    await interaction.response.send_message("Command being processed... check pms for result")
     result = delBuyStock(interaction.user.id, parsed_message)
     await interaction.user.send(result)
 
@@ -79,6 +80,7 @@ async def delsell(interaction: discord.Interaction,
                   tp_high: float):
 
     parsed_message = [ticker.upper(), num_shares, tp_low, tp_high]
+    await interaction.response.send_message("Command being processed... check pms for result")
     result = delSellStock(interaction.user.id, parsed_message)
     await interaction.user.send(result)
 
