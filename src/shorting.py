@@ -1,10 +1,17 @@
 from .utils.yf_scraper import getValue
-from .utils.ids import getTransacId 
+from .utils.ids import getTransacId
 from .utils.timing import getTransacTime, getTransacDate
-from .tables.shorts_table import appendToShortTable, removeFromUserShort, queryShortById, queryDistinctShorts, queryShortsByTicker
+from .tables.shorts_table import (
+    appendToShortTable,
+    removeFromUserShort,
+    queryShortById,
+    queryDistinctShorts,
+    queryShortsByTicker,
+)
 from .tables.users_table import queryUserBalance, updateUserBalance
 from .networth import calculateUserNetWorth
 from .bot_config import findUser
+
 
 def shortStock(user_id, command):
     CURR_VALUE = 0
@@ -13,7 +20,6 @@ def shortStock(user_id, command):
     STOP_LOSS = 2
     try:
         num_shares = command[NUM_SHARES]
-
         if num_shares <= 0:
             return f"{command} Task Terminated: Can't purchase negative or zero shares"
 
@@ -22,7 +28,7 @@ def shortStock(user_id, command):
         if not share_price:
             return f"{command} Task Terminated: Ticker wasn't found"
         share_price = share_price[CURR_VALUE]
-        
+
         stop_loss = command[STOP_LOSS]
         if stop_loss <= share_price:
             return f"{command} Task Terminated: Stop loss ({stop_loss:.2f}) < or = current {ticker} share price ({share_price:.2f})"
@@ -35,32 +41,33 @@ def shortStock(user_id, command):
         transac_time = getTransacTime()
         transac_date = getTransacDate()
         transac_id = getTransacId()
-        transac_type = "short" 
-        appendToShortTable(user_id,
-                           transac_id,
-                           ticker,
-                           num_shares,
-                           share_price,
-                           stop_loss,
-                           transac_type,
-                           transac_date,
-                           transac_time)
-        
+        transac_type = "short"
+        appendToShortTable(
+            user_id,
+            transac_id,
+            ticker,
+            num_shares,
+            share_price,
+            stop_loss,
+            transac_type,
+            transac_date,
+            transac_time,
+        )
         return f"{command} Task Completed: Cover your position, or it will be done for you when the stop loss is hit."
-
     except (IndexError, TypeError, ValueError):
         return f"{command} Task Terminated: Bad parameters passed."
+
 
 def coverShort(user_id, command):
     CURR_VALUE = 0
     TRANSAC_ID = 0
     TICKER = 2
-    NUM_SHARES = 3 
-    INITIAL_PRICE = 4    
+    NUM_SHARES = 3
+    INITIAL_PRICE = 4
     try:
         transac_id = command[TRANSAC_ID]
         balance = queryUserBalance(user_id)
-        
+
         transaction = queryShortById(user_id, transac_id)
         if transaction == None:
             return f"{command} Task Terminated: Couldn't pinpoint transaction by ID"
@@ -76,13 +83,11 @@ def coverShort(user_id, command):
         updateUserBalance(user_id, new_balance)
         removeFromUserShort(user_id, transac_id)
         return f"{command} Task Completed: Ran without error. Profit: {profit:.2f}. Balance: {new_balance:.2f}"
-
     except (IndexError, TypeError, ValueError):
         return f"{command} Task Terminated: Bad parameters passed."
 
 async def checkShortPositions():
-
-    results = queryDistinctShorts() 
+    results = queryDistinctShorts()
     if not results:
         return
 

@@ -1,7 +1,7 @@
 import time
 
 def marketHours():
-    day = time.gmtime().tm_wday 
+    day = time.gmtime().tm_wday
     hour = time.gmtime().tm_hour + 1
     minute = time.gmtime().tm_min
     if day >= 0 and day <= 4:
@@ -9,11 +9,11 @@ def marketHours():
             return True
         elif 14 < hour < 21:
             return True
-        else: 
+        else:
             return False
-    else: 
+    else:
         return False
-    
+
 def getTransacTime():
     current_time = time.time()
     current_time = time.gmtime(current_time)
@@ -29,4 +29,3 @@ def getTransacDate():
 def getTimeSinceEpoch():
     cur_time = time.time()
     return cur_time
-
