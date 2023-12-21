@@ -6,6 +6,7 @@ from .tables.users_table import queryUserBalance, updateUserBalance
 from .bot_config import findUser
 
 def optionStock(user_id, command):
+    CURR_VALUE = 0
     TICKER = 0
     NUM_SHARES = 1
     EXPIRATION_DAYS = 2
@@ -24,6 +25,7 @@ def optionStock(user_id, command):
         strike_price = getValue([ticker])
         if not strike_price:
             return f"{command} Task Terminated: Ticker wasn't found"
+        strike_price = strike_price[CURR_VALUE]
         
         interest_rate = command[INTEREST_RATE]
         premium = calculateOptionPremium(ticker, strike_price, expiration_days, interest_rate)
@@ -58,6 +60,7 @@ def optionStock(user_id, command):
         return f"{command} Task Terminated: Bad parameters passed."
 
 def exerciseOption(user_id, command):
+    CURR_VALUE = 0
     TRANSAC_ID = 0
     TICKER = 2
     NUM_SHARES = 3
@@ -74,6 +77,9 @@ def exerciseOption(user_id, command):
         num_shares = transac[NUM_SHARES]
         premium = transac[PREMIUM]
         current_price = getValue([ticker])
+        if not current_price:
+            return f"{command} Task Terminated: Ran into unexpected error"
+        current_price = current_price[CURR_VALUE]
         strike_price = transac[STRIKE_PRICE]
         balance = queryUserBalance(user_id)
 

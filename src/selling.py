@@ -10,6 +10,7 @@ from .tables.stocks_table import updateUserStockAmount, querySpecificUserStock, 
 from .tables.users_table import queryUserBalance, updateUserBalance
 
 def sellStock(user_id, command):
+    CURR_VALUE = 0
     TICKER = 0
     AMOUNT = 1
     try:
@@ -19,9 +20,10 @@ def sellStock(user_id, command):
             return f"{command} Task Terminated: Can't sell negative or zero shares"
 
         ticker = command[TICKER].upper()
-        curr_price = getValue([ticker])
-        if curr_price == None:
+        share_price = getValue([ticker])
+        if not share_price:
             return f"{command} Task Terminated: Ticker wasn't found"
+        share_price = share_price[CURR_VALUE]
 
         transac_instances = querySpecificUserStock(user_id, ticker)
 
@@ -41,7 +43,7 @@ def sellStock(user_id, command):
             transac_num_shares = transac[TRANSAC_NUM_SHARES]
             transac_initial_price = transac[TRANSAC_INITIAL_PRICE]
             
-            transac_profit = (curr_price * transac_num_shares) - (transac_initial_price * transac_num_shares)
+            transac_profit = (share_price * transac_num_shares) - (transac_initial_price * transac_num_shares)
             total_profit += transac_profit
 
             if num_shares_to_sell >= transac_num_shares:
@@ -68,6 +70,7 @@ def sellStock(user_id, command):
         return f"{command} Task Terminated: Bad paramaters passed."
         
 def delSellStock(user_id, command):
+    CURR_VALUE = 0
     TICKER = 0
     AMOUNT = 1
     TP_LOW = 2
@@ -85,22 +88,24 @@ def delSellStock(user_id, command):
             return f"{command} Task Terminated: Flip flopped target prices"
 
         ticker = command[TICKER].upper()       
-        curr_price = getValue([ticker])
-        if curr_price == None:
+        share_price = getValue([ticker])
+        if not share_price:
             return f"{command} Task Terminated: Ticker wasn't ticker"
+        share_price = share_price[CURR_VALUE]
 
         transac_instances = querySpecificUserStock(user_id, ticker)
         if transac_instances == None:
             return f"{command} Task Terminated: No {ticker} stock owned"
 
-        while (curr_price < target_price_low) or (curr_price > target_price_high):
+        while (share_price < target_price_low) or (share_price > target_price_high):
 
             if not marketHours():
                 return f"{command} Task Terminated: Ran into after hours"
 
-            curr_price = getValue([ticker])
-            if curr_price == None:
+            share_price = getValue([ticker])
+            if not share_price:
                 return f"{command} Task Terminated: Ran into unexpected error"
+            share_price = share_price[CURR_VALUE]
 
         balance = queryUserBalance(user_id)
         new_balance = balance
@@ -116,7 +121,7 @@ def delSellStock(user_id, command):
             transac_num_shares = transac[TRANSAC_NUM_SHARES]
             transac_initial_price = transac[TRANSAC_INITIAL_PRICE]
             
-            transac_profit = (curr_price * transac_num_shares) - (transac_initial_price * transac_num_shares)
+            transac_profit = (share_price * transac_num_shares) - (transac_initial_price * transac_num_shares)
             total_profit += transac_profit
 
             if num_shares_to_sell >= transac_num_shares:

@@ -7,6 +7,7 @@ from .networth import calculateUserNetWorth
 from .bot_config import findUser
 
 def shortStock(user_id, command):
+    CURR_VALUE = 0
     TICKER = 0
     NUM_SHARES = 1
     STOP_LOSS = 2
@@ -18,8 +19,9 @@ def shortStock(user_id, command):
 
         ticker = command[TICKER].upper()
         share_price = getValue([ticker])
-        if share_price == None:
+        if not share_price:
             return f"{command} Task Terminated: Ticker wasn't found"
+        share_price = share_price[CURR_VALUE]
         
         stop_loss = command[STOP_LOSS]
         if stop_loss <= share_price:
@@ -50,6 +52,7 @@ def shortStock(user_id, command):
         return f"{command} Task Terminated: Bad parameters passed."
 
 def coverShort(user_id, command):
+    CURR_VALUE = 0
     TRANSAC_ID = 0
     TICKER = 2
     NUM_SHARES = 3 
@@ -66,7 +69,7 @@ def coverShort(user_id, command):
         initial_price = transaction[INITIAL_PRICE]
         ticker = transaction[TICKER]
 
-        cur_price = getValue([ticker])
+        cur_price = getValue([ticker])[CURR_VALUE]
 
         profit = (initial_price - cur_price) * num_shares
         new_balance = balance + profit

@@ -17,11 +17,7 @@ def scrape(ticker):
         return None
 
 def getValue(tickers):
-
-    prices = [scrape(ticker) for ticker in tickers]
-    if len(prices) == 1:
-        return prices[0]
-    return prices
+    return [scrape(ticker) for ticker in tickers]
 
 def calculateOptionPremium(ticker, strike_price, expiration_days, interest_rate):
     try:

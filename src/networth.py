@@ -16,8 +16,6 @@ def calculateUserNetWorth(user_id):
         for stock in user_stocks:
             stock_shares.append(queryUserStockAmount(user_id, stock))
         share_values = getValue(user_stocks)
-        if not (type(share_values) is list):
-            share_values = [share_values]
 
         stock_share_value_zip = zip(user_stocks, stock_shares, share_values)
         for tkr, ns, val in stock_share_value_zip:

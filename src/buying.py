@@ -12,6 +12,7 @@ from .tables.users_table import queryUserBalance, updateUserBalance
 
 
 def buyStock(user_id, command):
+    CURR_VALUE = 0
     TICKER = 0
     AMOUNT = 1
     try:
@@ -22,9 +23,9 @@ def buyStock(user_id, command):
         
         ticker = command[TICKER].upper()
         share_price = getValue([ticker])
-
-        if share_price == None:
+        if not share_price:
             return f"{command} Task Terminated: Ticker wasn't found"
+        share_price = share_price[CURR_VALUE]
 
         total_transac_cost = share_price * num_shares
         
@@ -56,6 +57,7 @@ def buyStock(user_id, command):
         return f"{command} Task Terminated: Bad parameters passed."
     
 def delBuyStock(user_id, command):
+    CURR_VALUE = 0
     TICKER = 0
     AMOUNT = 1
     TP_LOW = 2
@@ -73,10 +75,10 @@ def delBuyStock(user_id, command):
             return f"{command} Task Terminated: Flip flopped target prices"
 
         ticker = command[TICKER].upper()
-        cur_value = getValue([ticker])
-
-        if cur_value == None:
+        share_price = getValue([ticker])
+        if not share_price:
             return f"{command} Task Terminated: Ticker wasn't found"
+        share_price = share_price[CURR_VALUE]
 
         max_transac_cost = target_price_high * num_shares
         
@@ -84,7 +86,7 @@ def delBuyStock(user_id, command):
         if max_transac_cost > balance:
             return f"{command} Task Terminated: Account balance too low. Balance: {balance:.2f}"
         
-        while (cur_value < target_price_low) or (cur_value > target_price_high):
+        while (share_price < target_price_low) or (share_price > target_price_high):
             
             if not marketHours():
                 return f"{command} Task Terminated: Ran into after hours"
@@ -93,14 +95,12 @@ def delBuyStock(user_id, command):
             if max_transac_cost > balance:
                 return f"{command} Task Terminated: Account balance too low. Balance: {balance:.2f}"
             
-            cur_value = getValue([ticker])
-
-            if cur_value == None:
+            share_price = getValue([ticker])
+            if not share_price:
                 return f"{command} Task Terminated: Ran into unexpected error"
+            share_price = share_price[CURR_VALUE]
                 
-            cur_value = cur_value
-                
-        transac_cost = num_shares * cur_value
+        transac_cost = num_shares * share_price
         
         transac_time = getTransacTime()
         transac_date = getTransacDate()
@@ -111,7 +111,7 @@ def delBuyStock(user_id, command):
                            transac_id,
                            ticker,
                            num_shares,
-                           cur_value,
+                           share_price,
                            transac_type,
                            transac_date,
                            transac_time)
