@@ -124,4 +124,4 @@ async def checkOptionPositions():
             user = findUser(user_id)
             if not user:
                 continue
-            await user.send(result)
+            await user.send("Option contraction reached expiration, return:" + "\n\n" + result)

@@ -57,7 +57,6 @@ def shortStock(user_id, command):
     except (IndexError, TypeError, ValueError):
         return f"{command} Task Terminated: Bad parameters passed."
 
-
 def coverShort(user_id, command):
     CURR_VALUE = 0
     TRANSAC_ID = 0
@@ -90,15 +89,10 @@ async def checkShortPositions():
     results = queryDistinctShorts()
     if not results:
         return
-
     distinct_tickers = [ticker[0] for ticker in results]
-    if not distinct_tickers:
-        return
 
     ticker_val_dict = {}
     ticker_vals = getValue(distinct_tickers)
-    if not (ticker_vals is list):
-        ticker_vals = [ticker_vals]
     for ticker in range(len(distinct_tickers)):
         ticker_val_dict[distinct_tickers[ticker]] = ticker_vals[ticker]
 
@@ -116,4 +110,4 @@ async def checkShortPositions():
             user = findUser(transac[USER_ID])
             if not user:
                 continue
-            await user.send(result)
+            await user.send("Short position reached stop loss, return:" + "\n\n" + result)
