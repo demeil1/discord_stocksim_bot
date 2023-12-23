@@ -1,16 +1,3 @@
-# Functionality
-
-* buying
-* target price buying 
-* selling
-* target price selling
-* shorting
-* options
-
-# TODOs
-
-* dividends 
-
 # /balance
 * description: returns your balance
 
