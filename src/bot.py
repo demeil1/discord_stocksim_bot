@@ -6,6 +6,7 @@ from .selling import sellStock, delSellStock
 from .shorting import shortStock, coverShort, checkShortPositions
 from .options import optionStock, exerciseOption, checkOptionPositions
 from .utils.yf_scraper import getValue, calculateOptionPremium
+from .utils.timing import marketHours
 from .tables.stocks_table import queryUserStock, querySpecificUserStock
 from .tables.users_table import queryUserBalance
 from .tables.shorts_table import queryUserShorts, querySpecificUserShorts
@@ -20,6 +21,15 @@ async def on_ready():
     print(f"\nSuccessful: We have logged in as {CLIENT.user}\n")
     checkStaleShorts.start()
     checkStaleOptions.start()
+
+@CLIENT.event
+async def on_message(message):
+    if message.author == CLIENT.user:
+        return  # Ignore messages from the bot itself
+    if not marketHours():
+        await message.channel.send("Sorry, the bot is not available after market hours.")
+        return
+    await CLIENT.process_commands(message)
 
 @tasks.loop(seconds=3.0)
 async def checkStaleShorts():
