@@ -1,3 +1,5 @@
+from discord import app_commands
+from discord.ext import commands, tasks
 from .bot_config import *
 from .buying import buyStock, delBuyStock
 from .selling import sellStock, delSellStock
