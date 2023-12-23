@@ -8,7 +8,7 @@ from .tables.options_table import (
     removeFromUserOption,
 )
 from .tables.users_table import queryUserBalance, updateUserBalance
-from .bot_config import findUser
+from .discord_funcs import findUser
 
 def optionStock(user_id, command):
     CURR_VALUE = 0

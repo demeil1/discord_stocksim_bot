@@ -10,7 +10,7 @@ from .tables.shorts_table import (
 )
 from .tables.users_table import queryUserBalance, updateUserBalance
 from .networth import calculateUserNetWorth
-from .bot_config import findUser
+from .discord_funcs import findUser
 
 
 def shortStock(user_id, command):
