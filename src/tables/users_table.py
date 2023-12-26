@@ -1,4 +1,5 @@
 from .database_globals import *
+from ..bot_config import STARTING_BALANCE
 
 def createUsersTable():
     create_table_statement = """CREATE TABLE IF NOT EXISTS USERS (
@@ -12,7 +13,6 @@ def appendToUserTable(user_id):
         USER_ID,
         BALANCE
     ) VALUES (?,?)"""
-    STARTING_BALANCE = 10000
     CURSOR.execute(append_statement, (user_id, STARTING_BALANCE))
     CONNECTION.commit()
 

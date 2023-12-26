@@ -22,15 +22,6 @@ async def on_ready():
     checkStaleShorts.start()
     checkStaleOptions.start()
 
-@CLIENT.event
-async def on_message(message):
-    if message.author == CLIENT.user:
-        return  # Ignore messages from the bot itself
-    if not marketHours():
-        await message.channel.send("Sorry, the bot is not available after market hours.")
-        return
-    await CLIENT.process_commands(message)
-
 @tasks.loop(seconds=3.0)
 async def checkStaleShorts():
     await checkShortPositions()
@@ -42,6 +33,11 @@ async def checkStaleOptions():
 @CLIENT.tree.command(description="buy [ticker: text] [# of shares: integer]")
 @app_commands.describe(ticker="ticker:", num_shares="# of shares:")
 async def buy(interaction: discord.Interaction, ticker: str, num_shares: int):
+    if not marketHours():
+        await interaction.response.send_message(
+            "Sorry, this command isn't available after market hours."
+        )
+        return
     parsed_message = [ticker.upper(), num_shares]
     result = buyStock(interaction.user.id, parsed_message)
     await interaction.response.send_message(result)
@@ -62,6 +58,11 @@ async def delbuy(
     tp_low: float,
     tp_high: float,
 ):
+    if not marketHours():
+        await interaction.response.send_message(
+            "Sorry, this command isn't available after market hours."
+        )
+        return
     parsed_message = [ticker.upper(), num_shares, tp_low, tp_high]
     await interaction.response.send_message(
         "Command being processed... check pms for result"
@@ -72,6 +73,11 @@ async def delbuy(
 @CLIENT.tree.command(description="sell [ticker: text] [# of shares: integer]")
 @app_commands.describe(ticker="ticker:", num_shares="# of shares:")
 async def sell(interaction: discord.Interaction, ticker: str, num_shares: int):
+    if not marketHours():
+        await interaction.response.send_message(
+            "Sorry, this command isn't available after market hours."
+        )
+        return
     parsed_message = [ticker.upper(), num_shares]
     result = sellStock(interaction.user.id, parsed_message)
     await interaction.response.send_message(result)
@@ -92,6 +98,11 @@ async def delsell(
     tp_low: float,
     tp_high: float,
 ):
+    if not marketHours():
+        await interaction.response.send_message(
+            "Sorry, this command isn't available after market hours."
+        )
+        return
     parsed_message = [ticker.upper(), num_shares, tp_low, tp_high]
     await interaction.response.send_message(
         "Command being processed... check pms for result"
@@ -106,6 +117,11 @@ async def delsell(
 async def short(
     interaction: discord.Interaction, ticker: str, num_shares: int, stop_loss: float
 ):
+    if not marketHours():
+        await interaction.response.send_message(
+            "Sorry, this command isn't available after market hours."
+        )
+        return
     parsed_message = [ticker.upper(), num_shares, stop_loss]
     result = shortStock(interaction.user.id, parsed_message)
     await interaction.response.send_message(result)
@@ -113,6 +129,11 @@ async def short(
 @CLIENT.tree.command(description="cover shorted [transaction: id]")
 @app_commands.describe(transac_id="transaction id:")
 async def cover(interaction: discord.Interaction, transac_id: str):
+    if not marketHours():
+        await interaction.response.send_message(
+            "Sorry, this command isn't available after market hours."
+        )
+        return
     parsed_message = [transac_id]
     result = coverShort(interaction.user.id, parsed_message)
     await interaction.response.send_message(result)
@@ -120,10 +141,20 @@ async def cover(interaction: discord.Interaction, transac_id: str):
 @CLIENT.tree.command(description="view option premium before purchasing")
 @app_commands.describe(ticker="ticker:", expiration_days="days until contract expires")
 async def premium(interaction: discord.Interaction, ticker: str, expiration_days: int):
-    interest_rate = 0.02
+    if not marketHours():
+        await interaction.response.send_message(
+            "Sorry, this command isn't available after market hours."
+        )
+        return
     strike_price = getValue([ticker.upper()])
+    if not strike_price:
+        await interaction.response.send_message(
+            f"Task Terminated: Error finding {ticker.upper()}'s strike price"
+        )
+        return
+    strike_price = strike_price[0]
     result = calculateOptionPremium(
-        ticker.upper(), strike_price, expiration_days, interest_rate
+        ticker.upper(), strike_price, expiration_days, INTEREST_RATE
     )
     if result:
         await interaction.response.send_message(
@@ -143,12 +174,16 @@ async def premium(interaction: discord.Interaction, ticker: str, expiration_days
 async def call(
     interaction: discord.Interaction, ticker: str, num_shares: int, expiration_days: int
 ):
-    interest_rate = 0.02
+    if not marketHours():
+        await interaction.response.send_message(
+            "Sorry, this command isn't available after market hours."
+        )
+        return
     parsed_message = [
         ticker.upper(),
         num_shares,
         expiration_days,
-        interest_rate,
+        INTEREST_RATE,
         "call",
     ]
     result = optionStock(interaction.user.id, parsed_message)
@@ -163,14 +198,23 @@ async def call(
 async def put(
     interaction: discord.Interaction, ticker: str, num_shares: int, expiration_days: int
 ):
-    interest_rate = 0.02
-    parsed_message = [ticker.upper(), num_shares, expiration_days, interest_rate, "put"]
+    if not marketHours():
+        await interaction.response.send_message(
+            "Sorry, this command isn't available after market hours."
+        )
+        return
+    parsed_message = [ticker.upper(), num_shares, expiration_days, INTEREST_RATE, "put"]
     result = optionStock(interaction.user.id, parsed_message)
     await interaction.response.send_message(result)
 
 @CLIENT.tree.command(description="exercise option [transaction: id]")
 @app_commands.describe(id="id:")
 async def exercise(interaction: discord.Interaction, id: str):
+    if not marketHours():
+        await interaction.response.send_message(
+            "Sorry, this command isn't available after market hours."
+        )
+        return
     parsed_message = [id]
     result = exerciseOption(interaction.user.id, parsed_message)
     await interaction.response.send_message(result)

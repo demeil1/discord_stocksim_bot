@@ -41,6 +41,5 @@ def calculateOptionPremium(ticker, strike_price, expiration_days, interest_rate)
         option_premium = stock_data['Close'].iloc[-1] * norm.cdf(d1) - strike_price * np.exp(-interest_rate * expiration_days / 252) * norm.cdf(d2)
 
         return option_premium
-    except:
+    except Exception as e:
         return None
-
