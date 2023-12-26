@@ -1,3 +1,11 @@
+# Installation
+
+See docs/INSTALLATION.md
+
+# Slash Commands
+
+See docs/SLASH_COMMANDS.md
+
 # Functionality
 
 * buying
