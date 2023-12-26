@@ -19,3 +19,4 @@ See docs/SLASH_COMMANDS.md
 
 * dividends 
 * options (short)
+* online databases instead of local
