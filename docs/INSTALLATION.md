@@ -18,7 +18,7 @@ pip install discord
 
 # Cloning This Repository
 ```zsh
-git clone https://github.com/demeil1/discord_stocksim_bot/tree/main
+git clone https://github.com/demeil1/discord_stocksim_bot
 ```
 # Creating Discord Bot
 1. Go to discord developer portal: https://discord.com/developers/docs/intro
@@ -59,3 +59,12 @@ python3 main.py
 7. Restart the bot
 
 Congratulations! You just got the discord_stocksim_bot working in your server!
+
+# Uninstalling
+
+```zsh
+# Run this command in the terminal
+# in the directory where discord_stocksim_bot
+# is stored
+rm -rf discord_stocksim_bot
+```  
