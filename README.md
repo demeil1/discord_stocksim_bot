@@ -1,4 +1,4 @@
-# Installation
+# Installation/Uninstalling
 
 See docs/INSTALLATION.md
 
